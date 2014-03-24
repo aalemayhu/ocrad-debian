@@ -1,0 +1,3 @@
+version=3
+opts="uversionmangle=s/-(rc|pre)/~$1/,pgpsigurlmangle=s/$/.sig/" \
+http://download.savannah.gnu.org/releases/ocrad/ocrad-(.*)[.]tar[.](?:bz2|lz)

@@ -1,0 +1,232 @@
+ocrad (0.23-1) unstable; urgency=low
+
+  * New upstream release.
+  * Upload to unstable.
+  * Install the NEWS file into binary packages.
+  * Add install-info to Build-Depends, as upstream build system tries to use
+    it.
+  * Remove unneeded dh_testdir, dh_installdirs, dh_installinfo and
+    dh_installman calls from debian/rules.
+  * Add get-orig-source target to debian/rules.
+  * Enable signature checking in debian/watch.
+  * Use xz for .orig.tar and .debian.tar compression.
+  * Compile with -D_FILE_OFFSET_BITS=64.
+  * Update DEP-8 tests.
+
+ -- Jakub Wilk <jwilk@debian.org>  Mon, 24 Mar 2014 23:28:29 +0100
+
+ocrad (0.23~pre2-1) experimental; urgency=low
+
+  * New upstream pre-release.
+  * Update copyright information.
+  * Add patch (more-news.diff) to add NEWS entries for previous versions of
+    Ocrad.
+  * Bump standards version to 3.9.5 (no changes needed).
+
+ -- Jakub Wilk <jwilk@debian.org>  Tue, 07 Jan 2014 10:47:36 +0100
+
+ocrad (0.22-1) unstable; urgency=low
+
+  * Upload to unstable.
+  * New upstream release.
+
+ -- Jakub Wilk <jwilk@debian.org>  Tue, 15 Oct 2013 15:14:28 +0200
+
+ocrad (0.22~rc3-1) experimental; urgency=low
+
+  * New upstream release candidate.
+  * Add “XS-Testsuite: autopkgtest” (closes: #692704).
+  * Start package synopses with lowercase letters.
+
+ -- Jakub Wilk <jwilk@debian.org>  Tue, 25 Jun 2013 21:06:18 +0200
+
+ocrad (0.22~rc2-1) experimental; urgency=low
+
+  * New upstream release candidate.
+    + Don't install TODO file, as it's no longer included upstream.
+  * Update debian/copyright.
+  * Modernize DEP-8 tests:
+    + Use $ADTTMP.
+    + Remove “Features: no-build-needed”; it's the default now.
+  * Refactor debian/rules:
+    + Put “-W -Wall” only in CPPFLAGS; don't duplicate it in CXXFLAGS.
+    + Don't use dh_testroot in the clean target. There's a good chance that
+      root privileges are not needed (e.g. because binary target was run under
+      fakeroot), and even if they are actually needed, the target will fail
+      quickly.
+    + Make the “binary-arch” target depend on “build-stamp” rather than
+      “build”.
+    + Merge the “install” target into “binary-arch”.
+    + Get rid of circular dependency between configure and configure-stamp.
+    + Drop some no-op commands.
+  * Bump standards version to 3.9.4 (no changes needed).
+
+ -- Jakub Wilk <jwilk@debian.org>  Wed, 29 May 2013 21:13:28 +0200
+
+ocrad (0.22~rc1-2) unstable; urgency=low
+
+  * Upload to unstable.
+  * Bump standards version to 3.9.3 (no changes needed).
+  * Add DEP-8 tests.
+  * Really remove patches.
+
+ -- Jakub Wilk <jwilk@debian.org>  Tue, 24 Apr 2012 21:34:21 +0200
+
+ocrad (0.22~rc1-1) experimental; urgency=low
+
+  * New upstream release candidate.
+    + Remove patches, applied upstream.
+    + Update year range in debian/copyright.
+  * Fix debian/watch to handle upstream “-rcN” versions correctly.
+
+ -- Jakub Wilk <jwilk@debian.org>  Mon, 23 Jan 2012 17:07:54 +0100
+
+ocrad (0.21-3) unstable; urgency=low
+
+  * Pass CPPFLAGS (taken from dpkg-buildflags) to configure.
+  * Multi-archify:
+    + Make ocrad ‘Multi-Arch: foreign’.
+    + Make libocrad-dev ‘Multi-Arch: same’.
+    + Install static libraries to /usr/lib/$(DEB_HOST_MULTIARCH) rather than
+      /usr/lib.
+    + Bump minimum required version of dpkg-dev to 1.16.
+  * Fix OCRAD_scale prototype, so that ocradlib.h can be included in C code
+    (ocradlib-fix-ocrad-scale-prototype.diff).
+
+ -- Jakub Wilk <jwilk@debian.org>  Thu, 27 Oct 2011 17:42:36 +0200
+
+ocrad (0.21-2) unstable; urgency=low
+
+  * Add build-arch and build-indep targets.
+  * debian/rules: move .PHONY declarations near the actual target definitions.
+  * Pass CXXFLAGS and LDFLAGS (taken from dpkg-buildflags) to configure.
+    + Build depend on dpkg-dev (>= 1.15.7).
+  * Bump standards version to 3.9.2 (no changes needed).
+
+ -- Jakub Wilk <jwilk@debian.org>  Sat, 23 Jul 2011 16:52:43 +0200
+
+ocrad (0.21-1) unstable; urgency=low
+
+  * New upstream release.
+    + Bump year in debian/copyright.
+
+ -- Jakub Wilk <jwilk@debian.org>  Tue, 11 Jan 2011 20:11:34 +0100
+
+ocrad (0.21~pre2-1) experimental; urgency=low
+
+  * New upstream release.
+
+ -- Jakub Wilk <jwilk@debian.org>  Thu, 16 Dec 2010 13:32:23 +0100
+
+ocrad (0.21~pre1-1) experimental; urgency=low
+
+  * New upstream release (closes: #585166, #566997).
+  * New maintainer (closes: #595550).
+  * Update debian/watch.
+  * Update debian/copyright.
+  * Don't install examples, they are not very helpful.
+  * Don't install the NEWS file.
+  * Remove useless debian/dirs.
+  * Remove unused comments from debian/rules.
+  * Bump debhelper compatibility level to 7.
+    + Use dh_prep instead of dh_clean -k. 
+  * Bump standards version to 3.9.1.
+    + Rebuild with new debhelper (closes: #567004). Thanks to Josue Abarca for
+      the bug report.
+  * Remove /usr/share/info/dir after ‘make install’ (closes: #596992).
+  * Ship the Ocrad library (closes: #583595). Thanks to Dmitry Katsubo for the
+    bug report and the initial patch.
+    + New binary package: libocrad-dev.
+  * Run test suite at build time.
+
+ -- Jakub Wilk <jwilk@debian.org>  Wed, 15 Sep 2010 22:01:23 +0200
+
+ocrad (0.17-4) unstable; urgency=low
+
+  * Added cstdio include header to avoid FTBFS with gcc 4.4 (Closes: #504957)
+  * Bumped Standars-version
+
+ -- Miguel Gea Milvaques <xerakko@debian.org>  Mon, 16 Feb 2009 21:32:30 +0100
+
+ocrad (0.17-3) unstable; urgency=low
+
+  * Added cstring include header to avoid FTBFS (Closes:455679)
+  * Updated policy version
+  * Moved Homepage from description.
+
+ -- Miguel Gea Milvaques <xerakko@debian.org>  Thu, 27 Dec 2007 10:55:31 +0100
+
+ocrad (0.17-2) unstable; urgency=low
+
+  * Modified Changelog. Now License is GPL-3
+  * Added missing includes (Closes: #417456)
+
+ -- Miguel Gea Milvaques <xerakko@debian.org>  Sun, 22 Jul 2007 13:02:53 +0200
+
+ocrad (0.17-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Miguel Gea Milvaques <xerakko@debian.org>  Sun, 22 Jul 2007 12:31:27 +0200
+
+ocrad (0.16-1) unstable; urgency=low
+
+  * New upstream release
+  * Updated NAME section in manual pages
+  * Updated Standards-Version
+  * Modified rules file to avoid ocrad to be build twice.
+  * Updated copyright file.
+
+ -- Miguel Gea Milvaques <xerakko@debian.org>  Mon, 23 Oct 2006 23:18:49 +0200
+
+ocrad (0.15-1) unstable; urgency=low
+
+  * New upstream release. Closes: #357717 (FTBFS with g++ 4.1)
+  * Changed Maintainer in control file. 
+
+ -- Miguel Gea Milvaques <xerakko@debian.org>  Thu, 20 Apr 2006 21:36:34 +0200
+
+ocrad (0.14-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Miguel Gea Milvaques <debian@miguelgea.com>  Sun, 19 Feb 2006 09:28:21 +0100
+
+ocrad (0.13-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Miguel Gea Milvaques <debian@miguelgea.com>  Sat, 22 Oct 2005 16:08:16 +0200
+
+ocrad (0.12-2) unstable; urgency=low
+
+  * Correct mistake on description 
+  * Updated Standard-Version to 3.6.2.1
+
+ -- Miguel Gea Milvaques <debian@miguelgea.com>  Sat,  2 Jul 2005 00:20:17 +0200
+
+ocrad (0.12-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Miguel Gea Milvaques <debian@miguelgea.com>  Sat, 11 Jun 2005 00:34:43 +0200
+
+ocrad (0.11-3) unstable; urgency=low
+
+  * More dependences removal. (Closes: #304292)
+
+ -- Miguel Gea Milvaques <debian@miguelgea.com>  Tue, 12 Apr 2005 09:01:20 +0200
+
+ocrad (0.11-2) unstable; urgency=low
+
+  * Removes not necessary dependences. 
+
+ -- Miguel Gea Milvaques <debian@miguelgea.com>  Mon, 11 Apr 2005 17:24:52 +0200
+
+ocrad (0.11-1) unstable; urgency=low
+
+  * Initial Release.
+  * closes: #197551 (ITP)
+
+ -- Miguel Gea Milvaques <debian@miguelgea.com>  Wed, 17 Nov 2004 11:36:58 +0100
+

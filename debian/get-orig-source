@@ -1,0 +1,14 @@
+#!/bin/sh
+set -e -u -x
+cwd=$(pwd)
+tmpdir=$(mktemp -t -d get-orig-source.XXXXXX)
+version="$1"
+upstream_version=${version%%-*}
+cd "$(dirname "$0")/../"
+uscan --noconf --force-download --rename --download-version="${upstream_version}" --destdir="$tmpdir"
+cd "$tmpdir"
+lzip -v -d *.tar.lz
+echo *.tar
+xz -v -c *.tar > "$cwd/ocrad_${upstream_version}.orig.tar.xz"
+cd /
+rm -rf "$tmpdir"
