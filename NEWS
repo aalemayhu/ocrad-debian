@@ -1,9 +1,5 @@
-Changes in version 0.23:
+Changes in version 0.24:
 
-Character recognition has been improved. (L vs Z).
+Two new filters, "upper_num" and "upper_num_only" have been added.
 
-Filters "letters_only" and "numbers_only" now remove leading whitespace.
-
-Build fixes.
-
-"ocrad.texinfo" has been renamed to "ocrad.texi".
+The description of "OCRAD_result_blocks" in the manual has been fixed.

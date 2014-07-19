@@ -47,7 +47,8 @@ public:
 class Filter
   {
 public:
-  enum Type { none, letters, letters_only, numbers, numbers_only };
+  enum Type { none, letters, letters_only, numbers, numbers_only,
+              upper_num, upper_num_only };
 private:
   Type type_;
 

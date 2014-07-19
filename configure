@@ -7,7 +7,7 @@
 # to copy, distribute and modify it.
 
 pkgname=ocrad
-pkgversion=0.23
+pkgversion=0.24-pre1
 progname=ocrad
 libname=ocrad
 srctrigger=doc/${pkgname}.texi
@@ -70,7 +70,7 @@ while [ $# != 0 ] ; do
 		echo "  --infodir=DIR         info files directory [${infodir}]"
 		echo "  --libdir=DIR          object code libraries [${libdir}]"
 		echo "  --mandir=DIR          man pages directory [${mandir}]"
-		echo "  CXX=COMPILER          C++ compiler to use [g++]"
+		echo "  CXX=COMPILER          C++ compiler to use [${CXX}]"
 		echo "  CPPFLAGS=OPTIONS      command line options for the preprocessor [${CPPFLAGS}]"
 		echo "  CXXFLAGS=OPTIONS      command line options for the C++ compiler [${CXXFLAGS}]"
 		echo "  LDFLAGS=OPTIONS       command line options for the linker [${LDFLAGS}]"

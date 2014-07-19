@@ -10,10 +10,10 @@ export LC_ALL
 objdir=`pwd`
 testdir=`cd "$1" ; pwd`
 OCRAD="${objdir}"/ocrad
-OCRCHECK="${objdir}"/ocrcheck
+OCRADCHECK="${objdir}"/ocradcheck
 framework_failure() { echo "failure in testing framework" ; exit 1 ; }
 
-if [ ! -x "${OCRAD}" ] ; then
+if [ ! -f "${OCRAD}" ] || [ ! -x "${OCRAD}" ] ; then
 	echo "${OCRAD}: cannot execute"
 	exit 1
 fi
@@ -115,10 +115,10 @@ expected_chars="+*/#$&()¿?[\\]^{|}<>çÇ@~¬±ªº"
 produced_chars=
 test_chars
 
-"${OCRCHECK}" ${in} > out || fail=1
+"${OCRADCHECK}" ${in} > out || fail=1
 cmp ${txt} out || fail=1
 printf .
-"${OCRCHECK}" ${in} --utf8 > out || fail=1
+"${OCRADCHECK}" ${in} --utf8 > out || fail=1
 cmp ${utxt} out || fail=1
 printf .
 

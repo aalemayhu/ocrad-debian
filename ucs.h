@@ -120,6 +120,7 @@ unsigned char map_to_byte( const int code );
 const char * ucs_to_utf8( const int code );
 int to_nearest_digit( const int code );
 int to_nearest_letter( const int code );
+int to_nearest_upper_num( const int code );
 int toupper( const int code );
 
 } // end namespace UCS

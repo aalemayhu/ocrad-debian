@@ -5,9 +5,9 @@
     to copy, distribute and modify it.
 
     Usage is:
-      ocrcheck filename.pnm
+      ocradcheck filename.pnm
     or
-      ocrcheck filename.pnm --utf8
+      ocradcheck filename.pnm --utf8
 
     This program reads the specified image file, feeds it to the OCR
     engine and sends the resulting text to stdout.
@@ -27,7 +27,7 @@ int main( const int argc, const char * const argv[] )
   const bool utf8 = ( argc > 2 );
   if( argc < 2 )
     {
-    std::fprintf( stderr, "Usage: ocrcheck filename.pnm\n" );
+    std::fprintf( stderr, "Usage: ocradcheck filename.pnm\n" );
     return 1;
     }
 
@@ -61,7 +61,7 @@ int main( const int argc, const char * const argv[] )
       std::fprintf( stderr, "Can't open file '%s' for reading\n", argv[1] );
     return 1;
     }
-//  std::fprintf( stderr, "ocrcheck: testing file '%s'\n", argv[1] );
+//  std::fprintf( stderr, "ocradcheck: testing file '%s'\n", argv[1] );
 
   if( ( utf8 && OCRAD_set_utf8_format( ocrdes, true ) < 0 ) ||
       OCRAD_set_threshold( ocrdes, -1 ) < 0 ||	// auto threshold

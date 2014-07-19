@@ -417,7 +417,7 @@ void Textblock::recognize( const Charset & charset, const Filter & filter )
 const Textline & Textblock::textline( const int i ) const
   {
   if( i < 0 || i >= textlines() )
-    Ocrad::internal_error( "line, index out of bounds" );
+    Ocrad::internal_error( "line, index out of bounds." );
   return *tlpv[i];
   }
 

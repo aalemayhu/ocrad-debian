@@ -108,7 +108,7 @@ void Textline::verify_big_initials()
 Character & Textline::character( const int i ) const
   {
   if( i < 0 || i >= characters() )
-    Ocrad::internal_error( "character, index out of bounds" );
+    Ocrad::internal_error( "character, index out of bounds." );
   return *cpv[i];
   }
 
@@ -130,7 +130,7 @@ Rectangle Textline::charbox( const Character & c ) const
 void Textline::delete_character( const int i )
   {
   if( i < 0 || i >= characters() )
-    Ocrad::internal_error( "delete_character, index out of bounds" );
+    Ocrad::internal_error( "delete_character, index out of bounds." );
   if( i < big_initials_ ) --big_initials_;
   delete cpv[i]; cpv.erase( cpv.begin() + i );
   }
@@ -151,9 +151,9 @@ int Textline::shift_characterp( Character * const p, const bool big )
 bool Textline::insert_space( const int i, const bool tab )
   {
   if( i <= 0 || i >= characters() )
-    Ocrad::internal_error( "insert_space, index out of bounds" );
+    Ocrad::internal_error( "insert_space, index out of bounds." );
   if( !height() )
-    Ocrad::internal_error( "insert_space, track not set yet" );
+    Ocrad::internal_error( "insert_space, track not set yet." );
   Character & c1 = *cpv[i-1];
   Character & c2 = *cpv[i];
   int l = c1.right() + 1;

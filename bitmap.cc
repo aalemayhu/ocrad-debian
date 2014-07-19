@@ -41,7 +41,7 @@ Bitmap::Bitmap( const Bitmap & source, const Rectangle & re )
   : Rectangle( re ), data( re.height() )
   {
   if( !source.includes( re ) )
-    Ocrad::internal_error( "bad parameter building a Bitmap from part of another one" );
+    Ocrad::internal_error( "bad parameter building a Bitmap from part of another one." );
 
   const int ldiff = left()-source.left();
   const int tdiff = top()-source.top();

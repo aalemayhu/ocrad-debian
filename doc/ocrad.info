@@ -11,7 +11,7 @@ File: ocrad.info,  Node: Top,  Next: Character sets,  Up: (dir)
 GNU Ocrad Manual
 ****************
 
-This manual is for GNU Ocrad (version 0.23, 10 March 2014).
+This manual is for GNU Ocrad (version 0.24-pre1, 4 June 2014).
 
 
    GNU Ocrad is an OCR (Optical Character Recognition) program and
@@ -117,6 +117,11 @@ The format for running ocrad is:
      to be recognized as a number. Other characters will be output
      without change.
      '--filter=numbers_only', same as '--filter=numbers' but other
+     characters will be discarded.
+     '--filter=upper_num' forces every character that resembles a
+     uppercase letter or a number to be recognized as such. Other
+     characters will be output without change.
+     '--filter=upper_num_only', same as '--filter=upper_num', but other
      characters will be discarded.
      Try '--filter=help' for a list of valid filter names.
 
@@ -292,8 +297,9 @@ must be verified by calling 'OCRAD_get_errno' before using it.
 
  -- Function: int OCRAD_result_blocks ( struct OCRAD_Descriptor * const
           OCRDES )
-     Returns the number of text blocks found in the image by the layout
-     analyser or 1 if no layout analysis was requested.
+     Returns the number of text blocks found in the image, or 0 if no
+     text was found. The returned value is usually 1, but can be larger
+     if layout analysis was requested.
 
  -- Function: int OCRAD_result_lines ( struct OCRAD_Descriptor * const
           OCRDES, const int BLOCKNUM )
@@ -442,6 +448,10 @@ binary search.
 drawbacks. It makes ocrad very sensitive to character defects, and makes
 difficult to modify ocrad to recognize new characters.
 
+   For best results, the characters should be at least 20 pixels high.
+If they are smaller, try the -scale option. Scanning the image at 300
+dpi usually produces a character size good enough for ocrad.
+
 
 File: ocrad.info,  Node: OCR results file,  Next: Problems,  Prev: Algorithm,  Up: Top
 
@@ -540,16 +550,16 @@ Concept index
 
 Tag Table:
 Node: Top196
-Node: Character sets1604
-Node: Invoking ocrad2749
-Node: Library version6978
-Node: Library functions7657
-Node: Library error codes12722
-Node: Image format conversion14273
-Node: Algorithm15797
-Node: OCR results file17071
-Node: Problems19339
-Node: Concept index19875
+Node: Character sets1607
+Node: Invoking ocrad2752
+Node: Library version7267
+Node: Library functions7946
+Node: Library error codes13064
+Node: Image format conversion14615
+Node: Algorithm16139
+Node: OCR results file17616
+Node: Problems19884
+Node: Concept index20420
 
 End Tag Table
 

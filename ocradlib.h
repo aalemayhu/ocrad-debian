@@ -19,7 +19,7 @@
 extern "C" {
 #endif
 
-const char * const OCRAD_version_string = "0.23";
+const char * const OCRAD_version_string = "0.24-pre1";
 
 
 /* OCRAD_Pixmap.data is a pointer to image data formed by "height" rows
@@ -88,11 +88,11 @@ int OCRAD_result_chars_block( struct OCRAD_Descriptor * const ocrdes,
 
 int OCRAD_result_chars_line( struct OCRAD_Descriptor * const ocrdes,
                              const int blocknum,	// 0..blocks-1
-                             const int linenum );	// 0..lines[block]-1
+                             const int linenum );	// 0..lines(block)-1
 
 const char * OCRAD_result_line( struct OCRAD_Descriptor * const ocrdes,
                                 const int blocknum,	// 0..blocks-1
-                                const int linenum );	// 0..lines[block]-1
+                                const int linenum );	// 0..lines(block)-1
 
 int OCRAD_result_first_character( struct OCRAD_Descriptor * const ocrdes );
 

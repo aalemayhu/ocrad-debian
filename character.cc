@@ -233,7 +233,10 @@ void Character::dprint( const Control & control, const Rectangle & charbox,
     std::fprintf( control.outfile, "%d guesses    ", guesses() );
   for( int i = 0; i < guesses(); ++i )
     {
-    if( !control.utf8 )
+    if( gv[i].code == '\t' )
+      std::fprintf( control.outfile, "guess '\\t', confidence %d    ",
+                             gv[i].value );
+    else if( !control.utf8 )
       {
       unsigned char ch = UCS::map_to_byte( gv[i].code );
       if( ch ) std::fprintf( control.outfile, "guess '%c', confidence %d    ",
@@ -364,6 +367,21 @@ void Character::apply_filter( const Filter & filter )
         if( !UCS::isdigit( gv[0].code ) )
           gv[0].code = UCS::to_nearest_digit( gv[0].code );
         if( remove && !UCS::isdigit( gv[0].code ) ) clear_guesses();
+        }
+      break;
+    case Filter::upper_num_only:
+      remove = true;
+    case Filter::upper_num:
+      if( !UCS::isupper( code ) && !UCS::isdigit( code ) &&
+          !UCS::isspace( code ) )
+        {
+        for( int i = 1; i < guesses(); ++i )
+          if( UCS::isupper( gv[i].code ) || UCS::isdigit( gv[i].code ) )
+            { swap_guesses( 0, i ); break; }
+        if( !UCS::isupper( gv[0].code ) && !UCS::isdigit( gv[0].code ) )
+          gv[0].code = UCS::to_nearest_upper_num( gv[0].code );
+        if( remove && !UCS::isupper( gv[0].code ) && !UCS::isdigit( gv[0].code ) )
+          clear_guesses();
         }
       break;
     }
