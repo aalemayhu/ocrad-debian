@@ -42,11 +42,13 @@ struct F_entry
 
 const F_entry F_table[] =
   {
-  { "none",         Filter::none },
-  { "letters",      Filter::letters },
-  { "letters_only", Filter::letters_only },
-  { "numbers",      Filter::numbers },
-  { "numbers_only", Filter::numbers_only },
+  { "none",           Filter::none },
+  { "letters",        Filter::letters },
+  { "letters_only",   Filter::letters_only },
+  { "numbers",        Filter::numbers },
+  { "numbers_only",   Filter::numbers_only },
+  { "upper_num",      Filter::upper_num },
+  { "upper_num_only", Filter::upper_num_only },
   { 0, Filter::none }
   };
 
@@ -76,7 +78,7 @@ int verbosity = 0;
 
 void Ocrad::internal_error( const char * const msg )
   {
-  std::fprintf( stderr, "ocrad: internal error: %s.\n", msg );
+  std::fprintf( stderr, "ocrad: internal error: %s\n", msg );
   std::exit( 3 );
   }
 
@@ -121,7 +123,7 @@ void Charset::show_error( const char * const program_name,
     {
     if( arg && std::strcmp( arg, "help" ) )
       std::fprintf( stderr,"%s: bad charset '%s'\n", program_name, arg );
-    std::fputs( "Valid charset names are:", stderr );
+    std::fputs( "Valid charset names:", stderr );
     for( int i = 0; i < charsets; ++i )
       std::fprintf( stderr, "  %s", charset_name[i] );
     std::fputs( "\n", stderr );
@@ -145,7 +147,7 @@ void Filter::show_error( const char * const program_name,
     {
     if( arg && std::strcmp( arg, "help" ) )
       std::fprintf( stderr,"%s: bad filter '%s'\n", program_name, arg );
-    std::fputs( "Valid filter names are:", stderr );
+    std::fputs( "Valid filter names:", stderr );
     for( int i = 0; F_table[i].name != 0; ++i )
       std::fprintf( stderr, "  %s", F_table[i].name );
     std::fputs( "\n", stderr );
@@ -169,7 +171,7 @@ void Transformation::show_error( const char * const program_name,
     {
     if( arg && std::strcmp( arg, "help" ) )
       std::fprintf( stderr,"%s: bad bitmap trasformation '%s'\n", program_name, arg );
-    std::fputs( "Valid transformation names are:", stderr );
+    std::fputs( "Valid transformation names:", stderr );
     for( int i = 0; T_table[i].name != 0; ++i )
       std::fprintf( stderr, "  %s", T_table[i].name );
     std::fputs( "\nRotations are made counter-clockwise.\n", stderr );

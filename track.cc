@@ -144,7 +144,7 @@ Vrhomboid::Vrhomboid( const int l, const int lc, const int r, const int rc,
     if( verbosity >= 0 )
       std::fprintf( stderr, "l = %d, lc = %d, r = %d, rc = %d, h = %d\n",
                     l, lc, r, rc, h );
-    error( "bad parameter building a Vrhomboid" );
+    error( "bad parameter building a Vrhomboid." );
     }
   left_ = l; lvcenter_ = lc; right_ = r; rvcenter_ = rc; height_ = h;
   }
@@ -152,21 +152,21 @@ Vrhomboid::Vrhomboid( const int l, const int lc, const int r, const int rc,
 
 void Vrhomboid::left( const int l )
   {
-  if( l > right_ ) error( "left, bad parameter resizing a Vrhomboid" );
+  if( l > right_ ) error( "left, bad parameter resizing a Vrhomboid." );
   left_ = l;
   }
 
 
 void Vrhomboid::right( const int r )
   {
-  if( r < left_ ) error( "right, bad parameter resizing a Vrhomboid" );
+  if( r < left_ ) error( "right, bad parameter resizing a Vrhomboid." );
   right_ = r;
   }
 
 
 void Vrhomboid::height( const int h )
   {
-  if( h <= 0 ) error( "height, bad parameter resizing a Vrhomboid" );
+  if( h <= 0 ) error( "height, bad parameter resizing a Vrhomboid." );
   height_ = h;
   }
 
@@ -174,7 +174,7 @@ void Vrhomboid::height( const int h )
 void Vrhomboid::extend_left( const int l )
   {
   if( l > right_ )
-    error( "extend_left, bad parameter resizing a Vrhomboid" );
+    error( "extend_left, bad parameter resizing a Vrhomboid." );
   lvcenter_ = vcenter( l ); left_ = l;
   }
 
@@ -182,7 +182,7 @@ void Vrhomboid::extend_left( const int l )
 void Vrhomboid::extend_right( const int r )
   {
   if( r < left_ )
-    error( "extend_right, bad parameter resizing a Vrhomboid" );
+    error( "extend_right, bad parameter resizing a Vrhomboid." );
   rvcenter_ = vcenter( r ); right_ = r;
   }
 

@@ -26,22 +26,22 @@ lib$(libname).a: $(ocr_objs) $(lib_objs)
 	$(AR) -rcs $@ $(ocr_objs) $(lib_objs)
 
 $(progname) : $(ocr_objs) $(objs)
-	$(CXX) $(LDFLAGS) -o $@ $(ocr_objs) $(objs)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $(ocr_objs) $(objs)
 
 $(progname)_profiled : $(ocr_objs) $(objs)
-	$(CXX) $(LDFLAGS) -pg -o $@ $(ocr_objs) $(objs)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -pg -o $@ $(ocr_objs) $(objs)
 
-ocrcheck : ocrcheck.o lib$(libname).a
-	$(CXX) $(LDFLAGS) -o $@ ocrcheck.o lib$(libname).a
+ocradcheck : ocradcheck.o lib$(libname).a
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ ocradcheck.o lib$(libname).a
 
-ocrcheck.o : ocrcheck.cc
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -DPROGVERSION=\"$(pkgversion)\" -c -o $@ $<
+ocradcheck.o : ocradcheck.cc
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -DPROGVERSION=\"$(pkgversion)\" -c -o $@ $<
 
 main.o : main.cc
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -DPROGVERSION=\"$(pkgversion)\" -c -o $@ $<
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -DPROGVERSION=\"$(pkgversion)\" -c -o $@ $<
 
 %.o : %.cc
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $@ $<
 
 $(lib_objs)     : Makefile ocradlib.h
 $(ocr_objs)     : Makefile bitmap.h blob.h common.h rectangle.h ucs.h
@@ -66,7 +66,7 @@ textline.o      : rational.h track.h character.h page_image.h textline.h
 textline_r2.o   : track.h character.h textline.h
 textpage.o      : segment.h mask.h track.h character.h page_image.h textline.h textblock.h textpage.h
 track.o         : track.h
-ocrcheck.o      : Makefile ocradlib.h
+ocradcheck.o      : Makefile ocradlib.h
 
 
 doc : info man
@@ -84,7 +84,7 @@ $(VPATH)/doc/$(progname).1 : $(progname)
 Makefile : $(VPATH)/configure $(VPATH)/Makefile.in
 	./config.status
 
-check : all ocrcheck
+check : all ocradcheck
 	@$(VPATH)/testsuite/check.sh $(VPATH)/testsuite $(pkgversion)
 
 install : install-bin install-info install-man
@@ -149,7 +149,7 @@ dist : doc
 
 clean :
 	-rm -f $(progname) $(progname)_profiled $(objs)
-	-rm -f ocrcheck ocrcheck.o $(ocr_objs) $(lib_objs) *.a
+	-rm -f ocradcheck ocradcheck.o $(ocr_objs) $(lib_objs) *.a
 
 distclean : clean
 	-rm -f Makefile config.status *.tar *.tar.lz

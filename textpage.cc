@@ -101,7 +101,7 @@ inline void join_blobs( std::vector< Blob * > & blobp_vector,
 
   i = blobp_vector.size();
   while( --i >= 0 && blobp_vector[i] != p2 ) ;
-  if( i < 0 ) Ocrad::internal_error( "join_blobs, lost blob" );
+  if( i < 0 ) Ocrad::internal_error( "join_blobs, lost blob." );
   blobp_vector.erase( blobp_vector.begin() + i );
 
   p1->add_bitmap( *p2 );
@@ -502,7 +502,7 @@ Textpage::~Textpage()
 const Textblock & Textpage::textblock( const int i ) const
   {
   if( i < 0 || i >= textblocks() )
-    Ocrad::internal_error( "Textpage::textblock, index out of bounds" );
+    Ocrad::internal_error( "Textpage::textblock, index out of bounds." );
   return *(tbpv[i]);
   }
 

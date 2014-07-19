@@ -39,7 +39,7 @@ Rectangle::Rectangle( const int l, const int t, const int r, const int b )
     {
     if( verbosity >= 0 )
       std::fprintf( stderr, "l = %d, t = %d, r = %d, b = %d\n", l, t, r, b );
-    error( "bad parameter building a Rectangle" );
+    error( "bad parameter building a Rectangle." );
     }
   left_ = l; top_ = t; right_ = r; bottom_ = b;
   }
@@ -47,42 +47,42 @@ Rectangle::Rectangle( const int l, const int t, const int r, const int b )
 
 void Rectangle::left( const int l )
   {
-  if( l > right_ ) error( "left, bad parameter resizing a Rectangle" );
+  if( l > right_ ) error( "left, bad parameter resizing a Rectangle." );
   left_ = l;
   }
 
 
 void Rectangle::top( const int t )
   {
-  if( t > bottom_ ) error( "top, bad parameter resizing a Rectangle" );
+  if( t > bottom_ ) error( "top, bad parameter resizing a Rectangle." );
   top_ = t;
   }
 
 
 void Rectangle::right( const int r )
   {
-  if( r < left_ ) error( "right, bad parameter resizing a Rectangle" );
+  if( r < left_ ) error( "right, bad parameter resizing a Rectangle." );
   right_ = r;
   }
 
 
 void Rectangle::bottom( const int b )
   {
-  if( b < top_ ) error( "bottom, bad parameter resizing a Rectangle" );
+  if( b < top_ ) error( "bottom, bad parameter resizing a Rectangle." );
   bottom_ = b;
   }
 
 
 void Rectangle::height( const int h )
   {
-  if( h <= 0 ) error( "height, bad parameter resizing a Rectangle" );
+  if( h <= 0 ) error( "height, bad parameter resizing a Rectangle." );
   bottom_ = top_ + h - 1;
   }
 
 
 void Rectangle::width( const int w )
   {
-  if( w <= 0 ) error( "width, bad parameter resizing a Rectangle" );
+  if( w <= 0 ) error( "width, bad parameter resizing a Rectangle." );
   right_ = left_ + w - 1;
   }
 

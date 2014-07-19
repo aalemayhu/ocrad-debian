@@ -6,8 +6,8 @@
 @finalout
 @c %**end of header
 
-@set UPDATED 10 March 2014
-@set VERSION 0.23
+@set UPDATED 4 June 2014
+@set VERSION 0.24-pre1
 
 @dircategory GNU Packages
 @direntry
@@ -142,6 +142,11 @@ but other characters will be discarded.@*
 number to be recognized as a number. Other characters will be output
 without change.@*
 @w{@samp{--filter=numbers_only}}, same as @w{@samp{--filter=numbers}}
+but other characters will be discarded.@*
+@w{@samp{--filter=upper_num}} forces every character that resembles a
+uppercase letter or a number to be recognized as such. Other characters
+will be output without change.@*
+@w{@samp{--filter=upper_num_only}}, same as @w{@samp{--filter=upper_num}},
 but other characters will be discarded.@*
 Try @w{@samp{--filter=help}} for a list of valid filter names.
 
@@ -326,8 +331,9 @@ analysis is enabled, probably producing more than one text block.
 
 
 @deftypefun int OCRAD_result_blocks ( struct OCRAD_Descriptor * const @var{ocrdes} )
-Returns the number of text blocks found in the image by the layout
-analyser or 1 if no layout analysis was requested.
+Returns the number of text blocks found in the image, or 0 if no text
+was found. The returned value is usually 1, but can be larger if layout
+analysis was requested.
 @end deftypefun
 
 
@@ -483,6 +489,10 @@ choose between two character categories, mostly like a binary search.
 As there is no such thing as a free lunch, this approach has some
 drawbacks. It makes ocrad very sensitive to character defects, and makes
 difficult to modify ocrad to recognize new characters.
+
+For best results, the characters should be at least 20 pixels high. If
+they are smaller, try the --scale option. Scanning the image at 300 dpi
+usually produces a character size good enough for ocrad.
 
 
 @node OCR results file

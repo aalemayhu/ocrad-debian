@@ -59,7 +59,7 @@ inline void join_holes( std::vector< Bitmap * > & holep_vector,
 
   i = holep_vector.size();
   while( --i >= 0 && holep_vector[i] != p2 ) ;
-  if( i < 0 ) Ocrad::internal_error( "join_holes, lost hole" );
+  if( i < 0 ) Ocrad::internal_error( "join_holes, lost hole." );
   holep_vector.erase( holep_vector.begin() + i );
 
   p1->add_bitmap( *p2 );
@@ -140,7 +140,7 @@ void Blob::bottom( const int b )
 const Bitmap & Blob::hole( const int i ) const
   {
   if( i < 0 || i >= holes() )
-    Ocrad::internal_error( "hole, index out of bounds" );
+    Ocrad::internal_error( "hole, index out of bounds." );
   return *holepv[i];
   }
 
@@ -163,11 +163,11 @@ bool Blob::test_BD() const
   const int wlimit = std::min( height(), width() ) / 2;
   int lb = wlimit, rt = wlimit;			// index of first dot found
   for( int i = 0; i < wlimit; ++i )
-    if( id( bottom() - i, left() + i ) == 1 ||
-        id( bottom() - i, left() + i + 1 ) == 1 )
+    if( id( bottom() - i, left() + i ) != 0 ||
+        id( bottom() - i, left() + i + 1 ) != 0 )
       { lb = i; break; }
   for( int i = 0; i < wlimit; ++i )
-    if( id( top() + i, right() - i ) == 1 )
+    if( id( top() + i, right() - i ) != 0 )
       { rt = i; break; }
   return ( rt >= 2 && 3 * lb <= rt );
   }
@@ -214,7 +214,7 @@ void Blob::print( FILE * const outfile ) const
 void Blob::fill_hole( const int i )
   {
   if( i < 0 || i >= holes() )
-    Ocrad::internal_error( "fill_hole, index out of bounds" );
+    Ocrad::internal_error( "fill_hole, index out of bounds." );
   add_bitmap( *holepv[i] );
   delete holepv[i];
   holepv.erase( holepv.begin() + i );

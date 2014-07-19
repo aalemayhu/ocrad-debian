@@ -75,7 +75,8 @@ void show_error( const char * const msg, const int errcode = 0,
     if( msg && msg[0] )
       {
       std::fprintf( stderr, "%s: %s", program_name, msg );
-      if( errcode > 0 ) std::fprintf( stderr, ": %s", std::strerror( errcode ) );
+      if( errcode > 0 )
+        std::fprintf( stderr, ": %s.", std::strerror( errcode ) );
       std::fprintf( stderr, "\n" );
       }
     if( help )
@@ -328,13 +329,13 @@ int main( const int argc, const char * const argv[] )
       case 'v': if( verbosity < 4 ) ++verbosity; break;
       case 'V': show_version(); return 0;
       case 'x': exportfile_name = arg; break;
-      default : Ocrad::internal_error( "uncaught option" );
+      default : Ocrad::internal_error( "uncaught option." );
       }
     } // end process options
 
 #if defined(__MSVCRT__) || defined(__OS2__) || defined(_MSC_VER)
-  setmode( STDIN_FILENO, O_BINARY );
-  setmode( STDOUT_FILENO, O_BINARY );
+  setmode( fileno( stdin ), O_BINARY );
+  setmode( fileno( stdout ), O_BINARY );
 #endif
 
   if( outfile_name && std::strcmp( outfile_name, "-" ) != 0 )

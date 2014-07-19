@@ -353,6 +353,24 @@ int UCS::to_nearest_letter( const int code )
   }
 
 
+int UCS::to_nearest_upper_num( const int code )
+  {
+  if( islower_ambiguous( code ) ) return toupper( code );
+  switch( code )
+    {
+    case 'l':
+    case '|':     return 'I';
+    case SINODOT: return '1';
+    case 'q':     return '4';
+    case 'b':
+    case SOACUTE: return '6';
+    case '&':     return '8';
+    case 'g':     return '9';
+    default:      return code;
+    }
+  }
+
+
 int UCS::toupper( const int code )
   {
   if( code < 128 ) return std::toupper( code );

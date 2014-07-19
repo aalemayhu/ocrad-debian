@@ -396,7 +396,7 @@ Page_image::Page_image( const Page_image & source, const int scale )
   : Rectangle( source ), maxval_( source.maxval_ ), threshold_( source.threshold_ )
   {
   if( scale < 2 || scale > source.width() || scale > source.height() )
-    Ocrad::internal_error( "bad parameter building a reduced Page_image" );
+    Ocrad::internal_error( "bad parameter building a reduced Page_image." );
 
   const int scale2 = scale * scale;
   Rectangle::height( source.height() / scale );
