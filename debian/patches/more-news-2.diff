@@ -1,13 +1,13 @@
 Description: add NEWS entries for previous versions
 Origin: upstream
-Last-Update: 2014-01-07
+Last-Update: 2014-19-07
 
 --- a/NEWS
 +++ b/NEWS
-@@ -7,3 +7,145 @@
- Build fixes.
+@@ -3,3 +3,145 @@ Changes in version 0.24:
+ Two new filters, "upper_num" and "upper_num_only" have been added.
  
- "ocrad.texinfo" has been renamed to "ocrad.texi".
+ The description of "OCRAD_result_blocks" in the manual has been fixed.
 +
 +==============================================================================
 +

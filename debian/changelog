@@ -1,3 +1,14 @@
+ocrad (0.24~pre1-1) UNRELEASED; urgency=medium
+
+  * New maintainer, thanks Jakub for your work!(Closes: #723097)
+    - debian/control:
+    Maintainer field set to myself.
+  * New upstream release.
+    - debian/patches:
+      Replaced more-news.diff with more-news-2.diff to get rid of fuzz.
+
+ -- Alexander Alemayhu <alexander@bitraf.no>  Sat, 19 Jul 2014 22:44:11 +0200
+
 ocrad (0.23-1) unstable; urgency=low
 
   * New upstream release.
