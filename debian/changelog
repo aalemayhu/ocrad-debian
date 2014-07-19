@@ -1,4 +1,4 @@
-ocrad (0.24~pre1-1) UNRELEASED; urgency=medium
+ocrad (0.24~pre1-1) experimental; urgency=medium
 
   * New maintainer, thanks Jakub for your work!(Closes: #723097)
     - debian/control:
