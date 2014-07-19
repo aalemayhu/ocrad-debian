@@ -1,0 +1,9 @@
+Changes in version 0.23:
+
+Character recognition has been improved. (L vs Z).
+
+Filters "letters_only" and "numbers_only" now remove leading whitespace.
+
+Build fixes.
+
+"ocrad.texinfo" has been renamed to "ocrad.texi".
