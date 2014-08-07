@@ -1,6 +1,7 @@
 ocrad (0.24~pre1-2) unstable; urgency=medium
 
   * Added Vcs-* fields.
+  * Upload to unstable.
 
  -- Alexander Alemayhu <alexander@bitraf.no>  Thu, 07 Aug 2014 20:48:21 +0200
 
