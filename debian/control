@@ -7,6 +7,8 @@ Build-Depends:
  install-info
 Standards-Version: 3.9.5
 Homepage: http://www.gnu.org/software/ocrad/ocrad.html
+Vcs-Git: git://github.com/scanf/ocrad-debian.git
+Vcs-Browser: https://github.com/scanf/ocrad-debian
 XS-Testsuite: autopkgtest
 
 Package: ocrad

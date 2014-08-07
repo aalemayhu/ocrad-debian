@@ -1,3 +1,9 @@
+ocrad (0.24~pre1-2) unstable; urgency=medium
+
+  * Added Vcs-* fields.
+
+ -- Alexander Alemayhu <alexander@bitraf.no>  Thu, 07 Aug 2014 20:48:21 +0200
+
 ocrad (0.24~pre1-1) experimental; urgency=medium
 
   * New maintainer, thanks Jakub for your work!(Closes: #723097)
