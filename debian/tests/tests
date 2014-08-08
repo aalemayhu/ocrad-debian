@@ -4,7 +4,7 @@ set -e -u
 testdir=$(readlink -f testsuite/)
 version=$(ocrad --version | sed -n -e '/GNU [oO]crad \(.*\)/ { s//\1/p }')
 ln -sf "$(which ocrad)" "$ADTTMP/"
-g++ -g -O2 -Wall -DPROGVERSION="\"$version\"" ocrcheck.cc -locrad -o "$ADTTMP/ocrcheck"
+g++ -g -O2 -Wall -DPROGVERSION="\"$version\"" ocradcheck.cc -locrad -o "$ADTTMP/ocradcheck"
 cd "$ADTTMP"
 "$testdir/check.sh" "$testdir" "$version"
 

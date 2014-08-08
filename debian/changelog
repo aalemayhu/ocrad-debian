@@ -1,3 +1,10 @@
+ocrad (0.24~pre1-3) unstable; urgency=medium
+
+  * debian/tests/:
+    - Fix DEP-8 test by applying fix from Jakub Wilk (Closes: #757441).
+
+ -- Alexander Alemayhu <alexander@bitraf.no>  Fri, 08 Aug 2014 12:34:06 +0200
+
 ocrad (0.24~pre1-2) unstable; urgency=medium
 
   * Added Vcs-* fields.
