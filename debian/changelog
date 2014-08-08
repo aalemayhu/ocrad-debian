@@ -3,6 +3,8 @@ ocrad (0.24~pre1-2) unstable; urgency=medium
   * Added Vcs-* fields.
   * Upload to unstable.
 
+  * Upload sponsored by Petter Reinholdtsen.
+
  -- Alexander Alemayhu <alexander@bitraf.no>  Thu, 07 Aug 2014 20:48:21 +0200
 
 ocrad (0.24~pre1-1) experimental; urgency=medium
@@ -13,6 +15,8 @@ ocrad (0.24~pre1-1) experimental; urgency=medium
   * New upstream release.
     - debian/patches:
       Replaced more-news.diff with more-news-2.diff to get rid of fuzz.
+
+  * Upload sponsored by Petter Reinholdtsen.
 
  -- Alexander Alemayhu <alexander@bitraf.no>  Sat, 19 Jul 2014 22:44:11 +0200
 
