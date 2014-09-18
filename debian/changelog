@@ -1,3 +1,12 @@
+ocrad (0.24~rc1-1) experimental; urgency=medium
+
+  * New upstream release (Closes: #761987).
+  * debian/patches/:
+    - Remove more-news-2.diff patch since upstream now includes more versions
+      in Changelog.
+
+ -- Alexander Alemayhu <alexander@bitraf.no>  Thu, 18 Sep 2014 19:32:27 +0200
+
 ocrad (0.24~pre1-3) unstable; urgency=medium
 
   * debian/tests/:
