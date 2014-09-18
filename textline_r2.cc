@@ -1,10 +1,9 @@
 /*  GNU Ocrad - Optical Character Recognition program
-    Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
-    2012, 2013, 2014 Antonio Diaz Diaz.
+    Copyright (C) 2003-2014 Antonio Diaz Diaz.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    the Free Software Foundation, either version 2 of the License, or
     (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
@@ -538,9 +537,9 @@ void Textline::recognize2( const Charset & charset )
     if( end - begin < 2 ) continue;
     Character & c1 = character( begin );
     if( !c1.guesses() ) continue;
-    int height = c1.height();
-    int code = c1.guess( 0 ).code;
-    if( UCS::isdigit( code ) || code == 'l' || code == 'O' || code == 'o' )
+    const int height = c1.height();
+    const int code1 = c1.guess( 0 ).code;
+    if( UCS::isdigit( code1 ) || code1 == 'l' || code1 == 'O' || code1 == 'o' )
       {
       int digits = 1;
       int i = begin + 1;

@@ -1,10 +1,9 @@
 /*  GNU Ocrad - Optical Character Recognition program
-    Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
-    2012, 2013, 2014 Antonio Diaz Diaz.
+    Copyright (C) 2003-2014 Antonio Diaz Diaz.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    the Free Software Foundation, either version 2 of the License, or
     (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
@@ -439,7 +438,7 @@ Textpage::Textpage( const Page_image & page_image, const char * const filename,
 
   std::vector< Zone > zone_vector;			// layout zones
   scan_page( page_image, zone_vector, debug_level, layout );
-  if( verbosity > 0 )
+  if( verbosity >= 1 )
     std::fprintf( stderr, "number of text blocks = %d\n", (int)zone_vector.size() );
 
   if( debug_level >= 98 )
@@ -455,7 +454,7 @@ Textpage::Textpage( const Page_image & page_image, const char * const filename,
     Textblock * const tbp = new Textblock( page_image, zone_vector[i].mask,
                                            zone_vector[i].blobp_vector );
     if( tbp->textlines() && debug_level < 90 )
-      tbp->recognize( control.charset, control.filter );
+      tbp->recognize( control );
     if( tbp->textlines() ) tbpv.push_back( tbp );
     else delete tbp;
     }

@@ -1,10 +1,9 @@
 /*  GNU Ocrad - Optical Character Recognition program
-    Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
-    2012, 2013, 2014 Antonio Diaz Diaz.
+    Copyright (C) 2003-2014 Antonio Diaz Diaz.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    the Free Software Foundation, either version 2 of the License, or
     (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
@@ -180,14 +179,14 @@ bool Profile::increasing( int i, const int min_delta )
   }
 
 
-bool Profile::decreasing( int i )
+bool Profile::decreasing( int i, int end )
   {
   if( limit_ < 0 ) initialize();
   const int noise = ( std::min( samples(), limit_ ) / 20 ) + 1;
-  if( i < 0 || samples() - i <= 2 * noise ||
-      data[i] - data[samples()-noise] < noise + 1 )
+  if( end < 0 || end > samples() - noise ) end = samples() - noise;
+  if( i < 0 || end - i <= 2 * noise || data[i] - data[end-1] <= noise )
     return false;
-  while( ++i < samples() - noise ) if( data[i] > data[i-1] ) return false;
+  while( ++i < end ) if( data[i] > data[i-1] ) return false;
   return true;
   }
 
@@ -375,18 +374,18 @@ bool Profile::islpit()
   {
   if( limit_ < 0 ) initialize();
   if( samples() < 5 ) return false;
-  const int noise = samples() / 30;
-  if( data[0] < noise + 2 ) return false;
+  const int noise = ( samples() / 30 ) + 1;
+  if( data[0] < noise + 1 ) return false;
 
   const int dmin = min();
   int begin = 0, ref = limit_;
-  for( int i = 0; i < samples(); ++i )
+  for( int i = 0; i < samples() - noise; ++i )
     {
     int d = data[i];
     if( d == dmin ) { begin = i; break; }
     if( d < ref ) ref = d; else if( d > ref + 1 ) return false;
     }
-  if( begin < 2 || 2 * begin >= samples() ) return false;
+  if( begin < 2 || 2 * begin > samples() ) return false;
   return true;
   }
 
@@ -480,7 +479,8 @@ bool Profile::istip()
     int th = ( mean() < 2 && range() > 2 ) ? 2 : mean(); if( th < 2 ) ++th;
     int lth = data[0], rth = data[samples()-1];
     int begin = 0, end = samples() - 1;
-    for( int i = 1, j = std::max( 2, samples() / 10 ); i < j; ++i )
+    const int tries = std::max( 2, ( samples() + 5 ) / 10 );
+    for( int i = 1; i < tries; ++i )
       {
       if( data[i] < lth ) { lth = data[i]; begin = i; }
       if( data[samples()-1-i] < rth )

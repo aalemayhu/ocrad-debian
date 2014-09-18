@@ -1,10 +1,9 @@
 /*  GNU Ocrad - Optical Character Recognition program
-    Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
-    2012, 2013, 2014 Antonio Diaz Diaz.
+    Copyright (C) 2003-2014 Antonio Diaz Diaz.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    the Free Software Foundation, either version 2 of the License, or
     (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
@@ -20,6 +19,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <vector>
 
 #include "common.h"
 
@@ -42,14 +42,14 @@ struct F_entry
 
 const F_entry F_table[] =
   {
-  { "none",           Filter::none },
   { "letters",        Filter::letters },
   { "letters_only",   Filter::letters_only },
   { "numbers",        Filter::numbers },
   { "numbers_only",   Filter::numbers_only },
+  { "same_height",    Filter::same_height },
   { "upper_num",      Filter::upper_num },
   { "upper_num_only", Filter::upper_num_only },
-  { 0, Filter::none }
+  { 0, (Filter::Type)0 }
   };
 
 struct T_entry
@@ -88,7 +88,7 @@ bool Ocrad::similar( const int a, const int b,
   {
   int difference = std::abs( a - b );
   if( percent_dif > 0 && difference <= abs_dif ) return true;
-  int max_abs = std::max( std::abs(a), std::abs(b) );
+  int max_abs = std::max( std::abs( a ), std::abs( b ) );
   return ( difference * 100 <= max_abs * percent_dif );
   }
 
@@ -121,35 +121,11 @@ void Charset::show_error( const char * const program_name,
   {
   if( verbosity >= 0 )
     {
-    if( arg && std::strcmp( arg, "help" ) )
+    if( arg && std::strcmp( arg, "help" ) != 0 )
       std::fprintf( stderr,"%s: bad charset '%s'\n", program_name, arg );
     std::fputs( "Valid charset names:", stderr );
     for( int i = 0; i < charsets; ++i )
       std::fprintf( stderr, "  %s", charset_name[i] );
-    std::fputs( "\n", stderr );
-    }
-  }
-
-
-bool Filter::set( const char * const name )
-  {
-  for( int i = 0; F_table[i].name != 0; ++i )
-    if( std::strcmp( name, F_table[i].name ) == 0 )
-      { type_ = F_table[i].type; return true; }
-  return false;
-  }
-
-
-void Filter::show_error( const char * const program_name,
-                         const char * const arg ) const
-  {
-  if( verbosity >= 0 )
-    {
-    if( arg && std::strcmp( arg, "help" ) )
-      std::fprintf( stderr,"%s: bad filter '%s'\n", program_name, arg );
-    std::fputs( "Valid filter names:", stderr );
-    for( int i = 0; F_table[i].name != 0; ++i )
-      std::fprintf( stderr, "  %s", F_table[i].name );
     std::fputs( "\n", stderr );
     }
   }
@@ -169,13 +145,32 @@ void Transformation::show_error( const char * const program_name,
   {
   if( verbosity >= 0 )
     {
-    if( arg && std::strcmp( arg, "help" ) )
+    if( arg && std::strcmp( arg, "help" ) != 0 )
       std::fprintf( stderr,"%s: bad bitmap trasformation '%s'\n", program_name, arg );
     std::fputs( "Valid transformation names:", stderr );
     for( int i = 0; T_table[i].name != 0; ++i )
       std::fprintf( stderr, "  %s", T_table[i].name );
     std::fputs( "\nRotations are made counter-clockwise.\n", stderr );
     }
+  }
+
+
+bool Control::add_filter( const char * const program_name,
+                          const char * const name )
+  {
+  for( int i = 0; F_table[i].name != 0; ++i )
+    if( std::strcmp( name, F_table[i].name ) == 0 )
+      { filters.push_back( F_table[i].type ); return true; }
+  if( verbosity >= 0 )
+    {
+    if( name && std::strcmp( name, "help" ) != 0 )
+      std::fprintf( stderr,"%s: bad filter '%s'\n", program_name, name );
+    std::fputs( "Valid filter names:", stderr );
+    for( int i = 0; F_table[i].name != 0; ++i )
+      std::fprintf( stderr, "  %s", F_table[i].name );
+    std::fputs( "\n", stderr );
+    }
+  return false;
   }
 
 

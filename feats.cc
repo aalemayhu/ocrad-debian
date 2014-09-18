@@ -1,10 +1,9 @@
 /*  GNU Ocrad - Optical Character Recognition program
-    Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
-    2012, 2013, 2014 Antonio Diaz Diaz.
+    Copyright (C) 2003-2014 Antonio Diaz Diaz.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    the Free Software Foundation, either version 2 of the License, or
     (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
@@ -44,7 +43,7 @@ int Features::hbars() const
   {
   if( hbars_ < 0 )
     {
-    const int limit = wp.max() / 2;
+    const int limit = ( wp.max() + 1 ) / 2;
     int state = 0, begin = 0, l = 0, r = 0;
     std::vector< int > count( b.height(), 0 );
     hbars_ = 0;

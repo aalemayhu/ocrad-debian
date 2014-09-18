@@ -1,10 +1,9 @@
 /*  GNU Ocrad - Optical Character Recognition program
-    Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
-    2012, 2013, 2014 Antonio Diaz Diaz.
+    Copyright (C) 2003-2014 Antonio Diaz Diaz.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    the Free Software Foundation, either version 2 of the License, or
     (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
@@ -20,6 +19,7 @@
 #include <cstddef>
 #include <cstdio>
 #include <cstdlib>
+#include <vector>
 
 #include "common.h"
 #include "rectangle.h"
@@ -277,8 +277,8 @@ int Rectangle::hypoti( const int c1, const int c2 )
   {
   long long temp = c1; temp *= temp;
   long long target = c2; target *= target; target += temp;
-  int lower = std::max( std::abs(c1), std::abs(c2) );
-  int upper = std::abs(c1) + std::abs(c2);
+  int lower = std::max( std::abs( c1 ), std::abs( c2 ) );
+  int upper = std::abs( c1 ) + std::abs( c2 );
   while( upper - lower > 1 )
     {
     int m = ( lower + upper ) / 2;

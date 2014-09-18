@@ -1,10 +1,9 @@
 /*  GNU Ocrad - Optical Character Recognition program
-    Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
-    2012, 2013, 2014 Antonio Diaz Diaz.
+    Copyright (C) 2003-2014 Antonio Diaz Diaz.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    the Free Software Foundation, either version 2 of the License, or
     (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
@@ -263,7 +262,7 @@ Page_image::Page_image( FILE * const f, const bool invert )
     case '6': read_p6( f, invert ); break;
     }
 
-  if( verbosity > 0 )
+  if( verbosity >= 1 )
     {
     std::fprintf( stderr, "file type is P%c\n", filetype );
     std::fprintf( stderr, "file size is %dw x %dh\n", width(), height() );

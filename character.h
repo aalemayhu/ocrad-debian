@@ -1,10 +1,9 @@
 /*  GNU Ocrad - Optical Character Recognition program
-    Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
-    2012, 2013, 2014 Antonio Diaz Diaz.
+    Copyright (C) 2003-2014 Antonio Diaz Diaz.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    the Free Software Foundation, either version 2 of the License, or
     (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
@@ -33,10 +32,9 @@ private:
 					// gv[0].code < 0 means further
 					// processing is needed (merged chars)
 
-  void recognize11( const Charset & charset, const Rectangle & charbox );
-    void recognize110( const Charset & charset, const Rectangle & charbox );
-    void recognize111( const Charset & charset, const Rectangle & charbox );
-    void recognize112( const Rectangle & charbox );
+  void recognize110( const Charset & charset, const Rectangle & charbox );
+  void recognize111( const Charset & charset, const Rectangle & charbox );
+  void recognize112( const Rectangle & charbox );
   void recognize12( const Charset & charset, const Rectangle & charbox );
   void recognize13( const Charset & charset, const Rectangle & charbox );
 
@@ -85,5 +83,5 @@ public:
   void xprint( const Control & control ) const;
 
   void recognize1( const Charset & charset, const Rectangle & charbox );
-  void apply_filter( const Filter & filter );
+  void apply_filter( const Filter::Type filter );
   };

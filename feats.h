@@ -1,10 +1,9 @@
 /*  GNU Ocrad - Optical Character Recognition program
-    Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
-    2012, 2013, 2014 Antonio Diaz Diaz.
+    Copyright (C) 2003-2014 Antonio Diaz Diaz.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    the Free Software Foundation, either version 2 of the License, or
     (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
@@ -46,7 +45,7 @@ public:
   int test_49ARegpq( const Rectangle & charbox ) const;
   int test_4ADQao( const Charset & charset, const Rectangle & charbox ) const;
   int test_6abd( const Charset & charset ) const;
-  int test_CEFIJLlT( const Charset & charset ) const;
+  int test_EFIJLlT( const Charset & charset ) const;
   int test_c() const;
   int test_frst( const Rectangle & charbox ) const;
   int test_G() const;

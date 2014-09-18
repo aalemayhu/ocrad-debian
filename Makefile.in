@@ -28,9 +28,6 @@ lib$(libname).a: $(ocr_objs) $(lib_objs)
 $(progname) : $(ocr_objs) $(objs)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $(ocr_objs) $(objs)
 
-$(progname)_profiled : $(ocr_objs) $(objs)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -pg -o $@ $(ocr_objs) $(objs)
-
 ocradcheck : ocradcheck.o lib$(libname).a
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ ocradcheck.o lib$(libname).a
 
@@ -46,7 +43,7 @@ main.o : main.cc
 $(lib_objs)     : Makefile ocradlib.h
 $(ocr_objs)     : Makefile bitmap.h blob.h common.h rectangle.h ucs.h
 $(objs)         : Makefile arg_parser.h
-character.o     : character.h
+character.o     : segment.h character.h profile.h feats.h
 character_r11.o : segment.h character.h profile.h feats.h
 character_r12.o : segment.h character.h profile.h feats.h
 character_r13.o : segment.h character.h profile.h feats.h
@@ -62,11 +59,11 @@ profile.o       : profile.h
 rational.o      : rational.h
 segment.o       : segment.h
 textblock.o     : rational.h track.h character.h page_image.h textline.h textblock.h
-textline.o      : rational.h track.h character.h page_image.h textline.h
+textline.o      : histogram.h rational.h track.h character.h page_image.h textline.h
 textline_r2.o   : track.h character.h textline.h
 textpage.o      : segment.h mask.h track.h character.h page_image.h textline.h textblock.h textpage.h
 track.o         : track.h
-ocradcheck.o      : Makefile ocradlib.h
+ocradcheck.o    : Makefile ocradlib.h
 
 
 doc : info man
@@ -148,7 +145,7 @@ dist : doc
 	lzip -v -9 $(DISTNAME).tar
 
 clean :
-	-rm -f $(progname) $(progname)_profiled $(objs)
+	-rm -f $(progname) $(objs)
 	-rm -f ocradcheck ocradcheck.o $(ocr_objs) $(lib_objs) *.a
 
 distclean : clean

@@ -1,5 +1,5 @@
 /*  Ocrcheck - A test program for the ocradlib library
-    Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014 Antonio Diaz Diaz.
+    Copyright (C) 2009-2014 Antonio Diaz Diaz.
 
     This program is free software: you have unlimited permission
     to copy, distribute and modify it.
@@ -37,7 +37,7 @@ int main( const int argc, const char * const argv[] )
     return 3;
     }
 
-  if( std::strcmp( PROGVERSION, OCRAD_version_string ) )
+  if( std::strcmp( PROGVERSION, OCRAD_version_string ) != 0 )
     {
     std::fprintf( stderr, "bad library version_string" );
     return 3;
@@ -102,7 +102,7 @@ int main( const int argc, const char * const argv[] )
               ++chars_total_by_count;
         }
       }
-    std::printf( "\n" );
+    std::fputs( "\n", stdout );
     }
   const int chars_total = OCRAD_result_chars_total( ocrdes );
   if( chars_total_by_block != chars_total ||
