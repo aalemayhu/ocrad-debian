@@ -4,6 +4,10 @@ ocrad (0.24~rc1-1) experimental; urgency=medium
   * debian/patches/:
     - Remove more-news-2.diff patch since upstream now includes more versions
       in Changelog.
+  * debian/README.debian:
+    - Move debianazation information to README.debian.
+  * debian/copyright:
+    - Fix lintian no-dep5-copyright tag.
 
  -- Alexander Alemayhu <alexander@bitraf.no>  Thu, 18 Sep 2014 19:32:27 +0200
 
