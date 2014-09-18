@@ -1,9 +1,9 @@
 /*  Ocradlib - Optical Character Recognition library
-    Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014 Antonio Diaz Diaz.
+    Copyright (C) 2009-2014 Antonio Diaz Diaz.
 
     This library is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    the Free Software Foundation, either version 2 of the License, or
     (at your option) any later version.
 
     This library is distributed in the hope that it will be useful,
@@ -167,7 +167,7 @@ int OCRAD_scale( OCRAD_Descriptor * const ocrdes, const int value )
   {
   if( !verify_descriptor( ocrdes ) ) return -1;
   int retval = 0;
-  try { if( !ocrdes->page_image->scale( value ) ) retval = -1; }
+  try { if( !ocrdes->page_image->change_scale( value ) ) retval = -1; }
   catch( ... ) { retval = -1; }
   if( retval < 0 ) ocrdes->ocr_errno = OCRAD_bad_argument;
   return retval;

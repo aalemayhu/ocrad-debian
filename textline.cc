@@ -1,10 +1,9 @@
 /*  GNU Ocrad - Optical Character Recognition program
-    Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
-    2012, 2013, 2014 Antonio Diaz Diaz.
+    Copyright (C) 2003-2014 Antonio Diaz Diaz.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    the Free Software Foundation, either version 2 of the License, or
     (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
@@ -25,6 +24,7 @@
 #include <stdint.h>
 
 #include "common.h"
+#include "histogram.h"
 #include "rational.h"
 #include "rectangle.h"
 #include "track.h"
@@ -292,8 +292,14 @@ void Textline::dprint( const Control & control, const bool graph,
                        const bool recursive ) const
   {
   if( graph || recursive )
-    std::fprintf( control.outfile, "mean height = %d, track segments = %d\n",
-                  mean_height(), segments() );
+    {
+    Histogram hist;
+    for( int i = 0; i < characters(); ++i )
+      if( !character(i).maybe(' ') )
+        hist.add_sample( character(i).height() );
+    std::fprintf( control.outfile, "mean height = %d, median height = %d, track segments = %d\n",
+                  mean_height(), hist.median(), segments() );
+    }
 
   for( int i = 0; i < characters(); ++i )
     {
@@ -339,17 +345,29 @@ void Textline::recognize1( const Charset & charset ) const
   }
 
 
-void Textline::apply_filter( const Filter & filter )
+void Textline::apply_filter( const Filter::Type filter )
   {
-  bool flag = false;
+  bool modified = false;
   for( int i = characters() - 1; i >= 0; --i )
     {
     Character & c = character( i );
     if( !c.guesses() ) continue;
     c.apply_filter( filter );
-    if( !c.guesses() ) { delete_character( i ); flag = true; }
+    if( !c.guesses() ) { delete_character( i ); modified = true; }
     }
-  if( flag )			// remove leadind/trailing/duplicate spaces
+  if( filter == Filter::same_height )
+    {
+    Histogram hist;
+    for( int i = 0; i < characters(); ++i )
+      if( !character(i).maybe(' ') )
+        hist.add_sample( character(i).height() );
+    const int median_height = hist.median();
+    for( int i = characters() - 1; i >= 0; --i )
+      if( !character(i).maybe(' ') &&
+          !Ocrad::similar( character(i).height(), median_height, 10, 2 ) )
+        { delete_character( i ); modified = true; }
+    }
+  if( modified )		// remove leadind/trailing/duplicate spaces
     for( int i = characters() - 1; i >= 0; --i )
       if( character(i).maybe(' ') &&
           ( i == 0 || i == characters() - 1 || character(i-1).maybe(' ') ) )

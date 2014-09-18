@@ -1,10 +1,9 @@
 /*  GNU Ocrad - Optical Character Recognition program
-    Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
-    2012, 2013, 2014 Antonio Diaz Diaz.
+    Copyright (C) 2003-2014 Antonio Diaz Diaz.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    the Free Software Foundation, either version 2 of the License, or
     (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
@@ -355,19 +354,25 @@ int UCS::to_nearest_letter( const int code )
 
 int UCS::to_nearest_upper_num( const int code )
   {
-  if( islower_ambiguous( code ) ) return toupper( code );
   switch( code )
     {
     case 'l':
     case '|':     return 'I';
+    case DEG:     return 'O';
+    case MICRO:   return 'U';
+    case POW1:
     case SINODOT: return '1';
+    case POW2:    return '2';
+    case POW3:    return '3';
     case 'q':     return '4';
     case 'b':
     case SOACUTE: return '6';
     case '&':     return '8';
-    case 'g':     return '9';
-    default:      return code;
+    case 'g':
+    case MASCORD: return '9';
     }
+  if( islower_ambiguous( code ) ) return toupper( code );
+  return code;
   }
 
 

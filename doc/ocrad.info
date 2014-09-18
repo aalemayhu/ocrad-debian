@@ -11,7 +11,7 @@ File: ocrad.info,  Node: Top,  Next: Character sets,  Up: (dir)
 GNU Ocrad Manual
 ****************
 
-This manual is for GNU Ocrad (version 0.24-pre1, 4 June 2014).
+This manual is for GNU Ocrad (version 0.24-rc1, 15 September 2014).
 
 
    GNU Ocrad is an OCR (Optical Character Recognition) program and
@@ -37,8 +37,7 @@ blocks of text normally found on printed pages.
 * Concept index::               Index of concepts
 
 
-   Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
-2012, 2013, 2014 Antonio Diaz Diaz.
+   Copyright (C) 2003-2014 Antonio Diaz Diaz.
 
    This manual is free documentation: you have unlimited permission to
 copy, distribute and modify it.
@@ -108,6 +107,10 @@ The format for running ocrad is:
 '-e NAME'
 '--filter=NAME'
      Pass the output text through the given postprocessing filter.
+     Several filters can be applied in sequence using more than one
+     '--filter' option. The filters are applied in the order they
+     appear on the command line.
+
      '--filter=letters' forces every character that resembles a letter
      to be recognized as a letter. Other characters will be output
      without change.
@@ -118,6 +121,9 @@ The format for running ocrad is:
      without change.
      '--filter=numbers_only', same as '--filter=numbers' but other
      characters will be discarded.
+     '--filter=same_height' discards any character (or noise) whose
+     height differs in more than 10 percent from the median height of
+     the characters in the line.
      '--filter=upper_num' forces every character that resembles a
      uppercase letter or a number to be recognized as such. Other
      characters will be output without change.
@@ -550,16 +556,16 @@ Concept index
 
 Tag Table:
 Node: Top196
-Node: Character sets1607
-Node: Invoking ocrad2752
-Node: Library version7267
-Node: Library functions7946
-Node: Library error codes13064
-Node: Image format conversion14615
-Node: Algorithm16139
-Node: OCR results file17616
-Node: Problems19884
-Node: Concept index20420
+Node: Character sets1551
+Node: Invoking ocrad2696
+Node: Library version7550
+Node: Library functions8229
+Node: Library error codes13347
+Node: Image format conversion14898
+Node: Algorithm16422
+Node: OCR results file17899
+Node: Problems20167
+Node: Concept index20703
 
 End Tag Table
 

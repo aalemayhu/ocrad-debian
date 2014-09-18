@@ -1,10 +1,9 @@
 /*  GNU Ocrad - Optical Character Recognition program
-    Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
-    2012, 2013, 2014 Antonio Diaz Diaz.
+    Copyright (C) 2003-2014 Antonio Diaz Diaz.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    the Free Software Foundation, either version 2 of the License, or
     (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
@@ -158,6 +157,7 @@ Textblock::Textblock( const Rectangle & page, const Rectangle & block,
   blobp_vector.clear();
 
   // Assign normal blobs to characters and create lines.
+  {
   int min_line = 0;			// first line of current cut
   tlpv.push_back( new Textline );
   int current_line = min_line = textlines() - 1;
@@ -275,6 +275,7 @@ Textblock::Textblock( const Rectangle & page, const Rectangle & block,
       if( lp->character( i ).top() <= t && 2 * ++c >= lp->characters() )
         { delete_line( tlpv, 0 ); break; }
     }
+  }
 
   // Second pass. Join lines of i-dots and tildes.
   for( int current_line = 0; current_line < textlines() - 1; )
@@ -359,20 +360,20 @@ Textblock::~Textblock()
   }
 
 
-void Textblock::recognize( const Charset & charset, const Filter & filter )
+void Textblock::recognize( const Control & control )
   {
   // Recognize characters.
   for( int i = 0; i < textlines(); ++i )
     {
     // First pass. Recognize the easy characters.
-    tlpv[i]->recognize1( charset );
+    tlpv[i]->recognize1( control.charset );
     // Second pass. Use context to clear up ambiguities.
-    tlpv[i]->recognize2( charset );
+    tlpv[i]->recognize2( control.charset );
     }
 
-  if( filter.type() != Filter::none )
+  for( unsigned j = 0; j < control.filters.size(); ++j )
     for( int i = 0; i < textlines(); ++i )
-      tlpv[i]->apply_filter( filter );
+      tlpv[i]->apply_filter( control.filters[j] );
 
   // Remove unrecognized lines.
   for( int i = textlines() - 1; i >= 0; --i )

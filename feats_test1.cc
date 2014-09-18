@@ -1,10 +1,9 @@
 /*  GNU Ocrad - Optical Character Recognition program
-    Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
-    2012, 2013, 2014 Antonio Diaz Diaz.
+    Copyright (C) 2003-2014 Antonio Diaz Diaz.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    the Free Software Foundation, either version 2 of the License, or
     (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
@@ -40,7 +39,12 @@ int Features::test_49ARegpq( const Rectangle & charbox ) const
   const Bitmap & h = b.hole( 0 );
 
   if( bp.minima( b.height() / 10 + 1 ) == 2 && bp.isctip() && tp.minima() == 1 )
-    { if( tp.isvpit() || rp.decreasing() ) return 'A'; else return 'R'; }
+    {
+    if( tp.isvpit() || rp.decreasing() ||
+        ( rp.decreasing( 1, rp.pos( 20 ) ) && lp.decreasing( 1, lp.pos( 20 ) ) ) )
+      return 'A';
+    else return 'R';
+    }
 
   int col = h.hcenter();
   int row = b.seek_bottom( h.bottom(), col, false ) + 1;
@@ -71,8 +75,8 @@ int Features::test_49ARegpq( const Rectangle & charbox ) const
         hlp.decreasing() && htp.decreasing() &&
         hwp[hwp.pos(30)] < hwp[hwp.pos(70)] )
       return '4';
-    if( rp.isconvex() && rp.ispit() && rp.minima() == 1 && tp.ispit() &&
-        charbox.bottom() > b.vpos( 80 ) )
+    if( rp.ispit() && rp.minima() == 1 && rp.iminimum() < rp.pos( 70 ) &&
+        tp.ispit() && charbox.bottom() > b.vpos( rp.isconvex() ? 80 : 90 ) )
       return '9';
     int hdiff;
     if( b.bottom_hook( &hdiff ) && hdiff > 0 )
@@ -85,7 +89,8 @@ int Features::test_49ARegpq( const Rectangle & charbox ) const
       }
     if( row > b.vpos( 85 ) && tp.ispit() ) return 'Q';
     int row2 = b.seek_bottom( row, col );
-    if( row2 < b.bottom() && rp.increasing( ( ( row + row2 ) / 2 ) - b.top() ) )
+    if( row2 < b.bottom() &&
+        rp.increasing( ( ( row + ( 2 * row2 ) ) / 3 ) - b.top() ) )
       return 'g';
     if( bp.minima() == 1 )
       {

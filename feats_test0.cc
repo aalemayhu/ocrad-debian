@@ -1,10 +1,9 @@
 /*  GNU Ocrad - Optical Character Recognition program
-    Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
-    2012, 2013, 2014 Antonio Diaz Diaz.
+    Copyright (C) 2003-2014 Antonio Diaz Diaz.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    the Free Software Foundation, either version 2 of the License, or
     (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
@@ -137,7 +136,8 @@ int Features::test_235Esz( const Charset & charset ) const
               else return UCS::SCCEDI; }
           return 'F';
           }
-        else if( lrow1 < urow2 && lrow2 < urow3 ) return 'E';
+        else if( lrow1 < urow2 && urow2 + 2 < lrow2 && lrow2 < urow3 &&
+                 urow2 <= b.vcenter() && lrow2 >= b.vcenter() ) return 'E';
         }
       }
     else if( b.escape_left( urow2, ucol2 ) )
@@ -153,7 +153,7 @@ int Features::test_235Esz( const Charset & charset ) const
   }
 
 
-int Features::test_CEFIJLlT( const Charset & charset ) const
+int Features::test_EFIJLlT( const Charset & charset ) const
   {
   if( tp.minima( b.height() / 4 ) != 1 || bp.minima( b.height() / 4 ) != 1 )
     return 0;
@@ -190,9 +190,11 @@ int Features::test_CEFIJLlT( const Charset & charset ) const
       {
       if( hbars() == 1 && 4 * hbar(0).height() <= b.height() )
         {
-        if( hbar(0).top() <= topmax || hbar(0).bottom() < b.vpos( 15 ) )
+        if( ( hbar(0).top() <= topmax || hbar(0).bottom() < b.vpos( 15 ) ) &&
+            hbar(0).width() > 2 * wp[wp.pos(75)] )
           return 'T';
         if( std::abs( hbar(0).vcenter() - b.vcenter() ) <= 1 &&
+            hbar(0).width() >= b.width() &&
             Ocrad::similar( b.height(), b.width(), 50 ) ) return '+';
         }
       if( hbars() == 2 &&
@@ -289,22 +291,6 @@ int Features::test_CEFIJLlT( const Charset & charset ) const
               if( b.seek_bottom( b.vpos( 75 ), i ) < b.bottom() &&
                   bp[i-b.left()] <= noise ) return 'l';
       }
-    if( vbar(0).left() <= b.left() + 1 && b.height() > 2 * b.width() &&
-        rp.istip() )
-      {
-      if( 2 * rp[rp.pos(50)] > b.width() )
-        {
-        int row = b.seek_top( b.vcenter(), b.hcenter() );
-        int col = b.seek_right( row, b.hcenter() );
-        if( col < b.right() )
-          {
-          row = b.seek_bottom( b.vcenter(), b.hcenter() );
-          col = b.seek_right( row, b.hcenter() );
-          if( col < b.right() ) return 'C';
-          }
-        }
-      return '[';
-      }
     if( vbar(0).right() >= b.right() - 1 )
       {
       if( lp.istip() && b.height() > 2 * b.width() )
@@ -320,7 +306,8 @@ int Features::test_CEFIJLlT( const Charset & charset ) const
           if( i > lp.pos( 10 ) && i < lp.pos( 40 ) ) return '1'; }
       }
     }
-  if( hbars() == 1 && std::abs( hbar(0).vcenter() - b.vcenter() ) <= 1 &&
+  if( hbars() == 1 && hbar(0).width() >= b.width() &&
+      std::abs( hbar(0).vcenter() - b.vcenter() ) <= 1 &&
       Ocrad::similar( b.height(), b.width(), 50 ) &&
       tp.isupit() && bp.isupit() )
     return '+';
@@ -335,9 +322,7 @@ int Features::test_c() const
     int urow = b.seek_top( b.vcenter(), b.hcenter() );
     int lrow = b.seek_bottom( b.vcenter(), b.hcenter() );
 
-    if( b.height() > 2 * b.width() &&
-        ( 3 * wp.max() <= 2 * b.width() ||
-        ( 2 * rp[urow-b.top()] >= b.width() && 2 * rp[lrow-b.top()] >= b.width() ) ) )
+    if( b.height() > 2 * b.width() && 3 * wp.max() <= 2 * b.width() )
       { if( lp.isconvex() ) return '('; else return 0; }
 
     if( urow > b.top() && lrow < b.bottom() && rp.isctip() &&
@@ -593,7 +578,7 @@ int Features::test_HKMNUuvwYy( const Rectangle & charbox ) const
             Ocrad::similar( col_segment( hbar(0).vcenter(), hbar(0).hcenter() ).size(),
                             hbar(0).height(), 30, 2 ) )
           {
-          if( 9 * hbar(0).width() < 10 * wp[wp.pos(50)] ) return 'H';
+          if( 9 * hbar(0).width() <= 10 * wp[wp.pos(50)] ) return 'H';
           return 0;
           }
         if( segments_in_row( b.vpos( 60 ) ) == 4 ||
@@ -660,6 +645,8 @@ int Features::test_hknwx( const Rectangle & charbox ) const
   if( urow > b.vpos( 20 ) || 3 * tp[tp.pos(60)] > b.height() )
     {
     const int m5 = tp.minima( b.height() / 5 );
+    if( m5 == 3 && segments_in_row( b.vcenter() ) == 2 &&
+        segments_in_row( b.vpos( 80 ) ) == 3 ) return 0;	// merged 'IX'
     if( ( m5 == 2 || m5 == 3 ) && tp.minima() >= 2 &&
         rp[rp.pos(25)] <= b.width() / 4 &&
         ( !lp.istpit() || rp.minima() == 1 ) ) return 'w';
@@ -674,7 +661,7 @@ int Features::test_hknwx( const Rectangle & charbox ) const
   if( urow <= b.vpos( 20 ) && tp.minima( b.height() / 4 ) == 1 &&
       Ocrad::similar( b.height(), b.width(), 40 ) &&
       ( 8 * ( rp[rp.pos(50)] - 1 ) <= b.width() ||
-        tp[tp.pos(100)] > b.height() / 2 ) )
+        tp[tp.pos(99)] > b.height() / 2 ) )
     return 'n';
   return 0;
   }
@@ -754,10 +741,36 @@ int Features::test_easy( const Rectangle & charbox ) const
 
 
 // Recognizes single line, non-rectangular characters without holes.
-// '/<>\^`
+// '/<>C[\^`c
 //
 int Features::test_line( const Rectangle & charbox ) const
   {
+  const int vnoise = ( b.height() / 30 ) + 1;
+  const int topmax = b.top() + vnoise;
+  const int botmin = b.bottom() - vnoise;
+  const bool vbar_left = ( vbars() == 1 && vbar(0).width() >= 2 &&
+                           vbar(0).left() <= b.hpos( 10 ) + 1 );
+  if( tp.minima() == 1 && bp.minima() == 1 && rp.istip() )
+    {
+    if( vbar_left && b.height() > 2 * b.width() &&
+        2 * rp[rp.pos(50)] > b.width() )
+      {
+      int row = b.seek_top( b.vcenter(), b.hcenter() );
+      int col = b.seek_right( row, b.hcenter() );
+      if( col < b.right() )
+        {
+        row = b.seek_bottom( b.vcenter(), b.hcenter() );
+        col = b.seek_right( row, b.hcenter() );
+        if( col < b.right() ) return 'C';
+        }
+      }
+    if( hbars() == 2 &&
+        hbar(0).top() <= topmax && 4 * hbar(0).height() <= b.height() &&
+        hbar(1).bottom() >= botmin && 4 * hbar(1).height() <= b.height() )
+      { if( vbar_left && b.height() > 2 * b.width() ) return '[';
+        if( vbar_left || lp.ispit() ) return 'c'; }
+    }
+
   int slope1, slope2;
 
   if( tp.minima() != 1 ) return 0;

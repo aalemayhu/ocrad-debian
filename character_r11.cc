@@ -1,10 +1,9 @@
 /*  GNU Ocrad - Optical Character Recognition program
-    Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
-    2012, 2013, 2014 Antonio Diaz Diaz.
+    Copyright (C) 2003-2014 Antonio Diaz Diaz.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    the Free Software Foundation, either version 2 of the License, or
     (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
@@ -37,22 +36,15 @@
 //
 void Character::recognize1( const Charset & charset, const Rectangle & charbox )
   {
-  if( blobs() == 1 ) recognize11( charset, charbox );
+  if( blobs() == 1 )
+    {
+    const Blob & b = blob( 0 );
+    if( b.holes() == 0 ) recognize110( charset, charbox );
+    else if( b.holes() == 1 ) recognize111( charset, charbox );
+    else if( b.holes() == 2 ) recognize112( charbox );
+    }
   else if( blobs() == 2 ) recognize12( charset, charbox );
   else if( blobs() == 3 ) recognize13( charset, charbox );
-  }
-
-
-// Recognizes 1 blob characters.
-// 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghklmnopqrstuvwxyz
-// #$&'()*+,-./<>@[\]^_`{|}~¬
-//
-void Character::recognize11( const Charset & charset, const Rectangle & charbox )
-  {
-  const Blob & b = blob( 0 );
-  if( b.holes() == 0 ) recognize110( charset, charbox );
-  else if( b.holes() == 1 ) recognize111( charset, charbox );
-  else if( b.holes() == 2 ) recognize112( charbox );
   }
 
 
@@ -74,7 +66,7 @@ void Character::recognize110( const Charset & charset, const Rectangle & charbox
   if( b.height() < 5 || ( b.height() < 8 && b.width() < 6 ) ||
       b.height() > 10 * b.width() || 5 * b.height() < b.width() ) return;
 
-  code = f.test_CEFIJLlT( charset ); if( code ) { add_guess( code, 0 ); return; }
+  code = f.test_EFIJLlT( charset );  if( code ) { add_guess( code, 0 ); return; }
   code = f.test_frst( charbox );     if( code ) { add_guess( code, 0 ); return; }
   code = f.test_G();                 if( code ) { add_guess( code, 0 ); return; }
   code = f.test_c();                 if( code ) { add_guess( code, 0 ); return; }
@@ -203,6 +195,8 @@ void Character::recognize110( const Charset & charset, const Rectangle & charbox
 
   if( f.tp.minima( b.height() / 4 ) == 3 )
     {
+    if( f.segments_in_row( b.vcenter() ) == 2 &&
+        f.segments_in_row( b.vpos( 80 ) ) == 3 ) return;	// merged 'IX'
     int hdiff;
     if( !b.bottom_hook( &hdiff ) &&
         ( f.segments_in_row( b.vcenter() ) < 4 ||

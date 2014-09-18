@@ -1,10 +1,9 @@
 /*  GNU Ocrad - Optical Character Recognition program
-    Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
-    2012, 2013, 2014 Antonio Diaz Diaz.
+    Copyright (C) 2003-2014 Antonio Diaz Diaz.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    the Free Software Foundation, either version 2 of the License, or
     (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
@@ -23,10 +22,13 @@
 
 #include "common.h"
 #include "rectangle.h"
+#include "segment.h"
 #include "ucs.h"
 #include "bitmap.h"
 #include "blob.h"
 #include "character.h"
+#include "profile.h"
+#include "feats.h"
 
 
 Character::Character( const Character & c )
@@ -254,8 +256,16 @@ void Character::dprint( const Control & control, const Rectangle & charbox,
                   "left = %d, top = %d, right = %d, bottom = %d\n",
                   left(), top(), right(), bottom() );
     std::fprintf( control.outfile,
-                  "width = %d, height = %d, hcenter = %d, vcenter = %d, black area = %d%%\n\n",
+                  "width = %d, height = %d, hcenter = %d, vcenter = %d, black area = %d%%\n",
                   width(), height(), hcenter(), vcenter(), ( area() * 100 ) / size() );
+    if( blobs() >= 1 && blobs() <= 3 )
+      {
+      const Blob & b = blob( blobs() - 1 );
+      Features f( b );
+      std::fprintf( control.outfile,
+                    "hbars = %d, vbars = %d\n", f.hbars(), f.vbars() );
+      }
+    std::fputs( "\n", control.outfile );
 
     const int minrow = std::min( top(), charbox.top() );
     const int maxrow = std::max( bottom(), charbox.bottom() );
@@ -335,18 +345,16 @@ void Character::xprint( const Control & control ) const
   }
 
 
-void Character::apply_filter( const Filter & filter )
+void Character::apply_filter( const Filter::Type filter )
   {
-  if( filter.type() == Filter::none || !guesses() ) return;
+  if( !guesses() ) return;
   const int code = gv[0].code;
   bool remove = false;
 
-  switch( filter.type() )
+  switch( filter )
     {
-    case Filter::none:			// only for completeness
-      break;
     case Filter::letters_only:
-      remove = true;
+      remove = true;				// fall through
     case Filter::letters:
       if( !UCS::isalpha( code ) && !UCS::isspace( code ) )
         {
@@ -358,7 +366,7 @@ void Character::apply_filter( const Filter & filter )
         }
       break;
     case Filter::numbers_only:
-      remove = true;
+      remove = true;				// fall through
     case Filter::numbers:
       if( !UCS::isdigit( code ) && !UCS::isspace( code ) )
         {
@@ -369,8 +377,9 @@ void Character::apply_filter( const Filter & filter )
         if( remove && !UCS::isdigit( gv[0].code ) ) clear_guesses();
         }
       break;
+    case Filter::same_height: break;		// handled at line level
     case Filter::upper_num_only:
-      remove = true;
+      remove = true;				// fall through
     case Filter::upper_num:
       if( !UCS::isupper( code ) && !UCS::isdigit( code ) &&
           !UCS::isspace( code ) )

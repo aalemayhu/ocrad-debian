@@ -1,10 +1,9 @@
 /*  GNU Ocrad - Optical Character Recognition program
-    Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
-    2012, 2013, 2014 Antonio Diaz Diaz.
+    Copyright (C) 2003-2014 Antonio Diaz Diaz.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    the Free Software Foundation, either version 2 of the License, or
     (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
@@ -77,7 +76,7 @@ void show_error( const char * const msg, const int errcode = 0,
       std::fprintf( stderr, "%s: %s", program_name, msg );
       if( errcode > 0 )
         std::fprintf( stderr, ": %s.", std::strerror( errcode ) );
-      std::fprintf( stderr, "\n" );
+      std::fputs( "\n", stderr );
       }
     if( help )
       std::fprintf( stderr, "Try '%s --help' for more information.\n",
@@ -145,7 +144,7 @@ void show_help()
                "  -u, --cut=<l,t,w,h>      cut input image by given rectangle\n"
                "  -v, --verbose            be verbose\n"
                "  -x, --export=<file>      export results in ORF format to <file>\n" );
-  if( verbosity > 0 )
+  if( verbosity >= 1 )
     {
     std::printf( "  -1..6                    pnm output file type (debug)\n"
                  "  -C, --copy               'copy' input to output (debug)\n"
@@ -167,7 +166,7 @@ void show_version()
   {
   std::printf( "GNU %s %s\n", program_name, PROGVERSION );
   std::printf( "Copyright (C) %s Antonio Diaz Diaz.\n", program_year );
-  std::printf( "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n"
+  std::printf( "License GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>\n"
                "This is free software: you are free to change and redistribute it.\n"
                "There is NO WARRANTY, to the extent permitted by law.\n" );
   }
@@ -185,7 +184,7 @@ int process_file( FILE * const infile, const char * const infile_name,
                   const Input_control & input_control,
                   const Control & control )
   {
-  if( verbosity > 0 )
+  if( verbosity >= 1 )
     std::fprintf( stderr, "processing file '%s'\n", infile_name );
   try
     {
@@ -195,22 +194,22 @@ int process_file( FILE * const infile, const char * const infile_name,
       {
       if( page_image.cut( input_control.ltwh ) )
         {
-        if( verbosity > 0 )
+        if( verbosity >= 1 )
           std::fprintf( stderr, "file cut to %dw x %dh\n",
                         page_image.width(), page_image.height() );
         }
       else
         {
-        if( verbosity > 0 )
+        if( verbosity >= 1 )
           std::fprintf( stderr, "file '%s' totally cut away\n", infile_name );
         return 1;
         }
       }
 
     page_image.transform( input_control.transformation );
-    page_image.scale( input_control.scale );
+    page_image.change_scale( input_control.scale );
     page_image.threshold( input_control.threshold );
-    if( verbosity > 0 )
+    if( verbosity >= 1 )
       {
       const Rational th( page_image.threshold(), page_image.maxval() );
       std::fprintf( stderr, "maxval = %d, threshold = %d (%s)\n",
@@ -233,7 +232,7 @@ int process_file( FILE * const infile, const char * const infile_name,
       }
     }
   catch( Page_image::Error e ) { show_error( e.msg ); return 2; }
-  if( verbosity > 0 ) std::fprintf( stderr, "\n" );
+  if( verbosity >= 1 ) std::fputs( "\n", stderr );
   return 0;
   }
 
@@ -307,8 +306,7 @@ int main( const int argc, const char * const argv[] )
                 break;
       case 'C': input_control.copy = true; break;
       case 'D': control.debug_level = std::strtol( arg, 0, 0 ); break;
-      case 'e': if( !control.filter.set( arg ) )
-                  { control.filter.show_error( program_name, arg ); return 1; }
+      case 'e': if( !control.add_filter( program_name, arg ) ) return 1;
                 break;
       case 'f': force = true; break;
       case 'F': if( !control.set_format( arg ) )

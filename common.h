@@ -1,10 +1,9 @@
 /*  GNU Ocrad - Optical Character Recognition program
-    Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
-    2012, 2013, 2014 Antonio Diaz Diaz.
+    Copyright (C) 2003-2014 Antonio Diaz Diaz.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
+    the Free Software Foundation, either version 2 of the License, or
     (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
@@ -44,23 +43,6 @@ public:
   };
 
 
-class Filter
-  {
-public:
-  enum Type { none, letters, letters_only, numbers, numbers_only,
-              upper_num, upper_num_only };
-private:
-  Type type_;
-
-public:
-  Filter() : type_( none ) {}
-  bool set( const char * const name );
-  Type type() const { return type_; }
-  void show_error( const char * const program_name,
-                   const char * const arg ) const;
-  };
-
-
 class Transformation
   {
 public:
@@ -78,10 +60,16 @@ public:
   };
 
 
+namespace Filter {
+enum Type { letters, letters_only, numbers, numbers_only,
+            same_height, upper_num, upper_num_only };
+} // end namespace Filter
+
+
 struct Control
   {
   Charset charset;
-  Filter filter;
+  std::vector< Filter::Type > filters;
   FILE * outfile, * exportfile;
   int debug_level;
   char filetype;
@@ -91,5 +79,6 @@ struct Control
     : outfile( stdout ), exportfile( 0 ),
       debug_level( 0 ), filetype( '4' ), utf8( false ) {}
 
+  bool add_filter( const char * const program_name, const char * const name );
   bool set_format( const char * const name );
   };

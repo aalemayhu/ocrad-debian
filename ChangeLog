@@ -1,3 +1,12 @@
+2014-07-15  Antonio Diaz Diaz  <antonio@gnu.org>
+
+	* Version 0.24-rc1 released.
+	* Improvements in character recognition.
+	* Allow more than one '-e, --filter' option.
+	* Added new filter 'same_height'.
+	* New file histogram.h.
+	* License changed to GPL version 2 or later.
+
 2014-06-04  Antonio Diaz Diaz  <antonio@gnu.org>
 
 	* Version 0.24-pre1 released.
@@ -45,8 +54,8 @@
 
 	* Version 0.19 released.
 	* Added library interface (ocradlib.h).
-	* Option '--crop' replaced with similar but different option
-	  '--cut', which can accept coordinates taken from the ORF file.
+	* Option '-p, --crop' replaced with similar but different option
+	  '-u, --cut', which can accept coordinates taken from the ORF file.
 	* Recognition of files with a single character and without white
 	  space at the edges has been fixed.
 	* testsuite/check.sh: Added new tests for the library interface
@@ -58,7 +67,7 @@
 
 	* Version 0.18 released.
 	* Added a layout analyser able to process arbitrary pages.
-	* Added new option '--quiet'.
+	* Added new option '-q, --quiet'.
 	* The '--layout' option no more accepts an argument.
 	* The '--crop' option now accepts negative coordinates.
 	* New recognized letter; 'a' with ring above.
@@ -85,7 +94,7 @@
 2006-10-20  Antonio Diaz Diaz  <ant_diaz@teleline.es>
 
 	* Version 0.16 released.
-	* Added new option '--filter'.
+	* Added new option '-e, --filter'.
 	* Better algorithm for vertical space detection (blank lines).
 	* Some fixes made to 'configure' script.
 	* Added two new debug levels.
@@ -103,7 +112,7 @@
 	* Ocrad is now able to read ppm files.
 	* Added new class 'Page_image' (256-level greymap).
 	* Added automatic and adaptive binarization by Otsu's method.
-	* Added new option '--crop'.
+	* Added new option '-p, --crop'.
 	* Added two new chapters 'Image Format Conversion' and
 	  'Algorithm' to the texinfo file.
 	* Target 'check' added to Makefile.
@@ -135,7 +144,7 @@
 2005-02-12  Antonio Diaz Diaz  <ant_diaz@teleline.es>
 
 	* Version 0.11 released.
-	* Added new option '--scale'.
+	* Added new option '-s, --scale'.
 	* Improvements in character recognition.
 	* Fixed bug in '--transform' (introduced in 0.10).
 
@@ -151,7 +160,7 @@
 2004-10-23  Antonio Diaz Diaz  <ant_diaz@teleline.es>
 
 	* Version 0.9 released.
-	* Added new option '--transform'.
+	* Added new option '-t, --transform'.
 	* 'DESTDIR' now works as expected.
 	* New class 'Textpage' is top of internal representation.
 
@@ -169,7 +178,7 @@
 	* Default charset is now ISO 8859-15 (latin9).
 	* Ocrad now recognizes Turkish characters (ISO 8859-9).
 	* Added new output format (UTF-8).
-	* Added new options '--charset' and '--format'.
+	* Added new options '-c, --charset' and '-F, --format'.
 	* Added man page.
 
 2003-12-18  Antonio Diaz Diaz  <ant_diaz@teleline.es>
@@ -195,7 +204,7 @@
 	* Added info file.
 	* Small changes to layout detector.
 	* Character codes > 127 now in ISO_8859_1::<charname> format.
-	* Added new option '--invert'.
+	* Added new option '-i, --invert'.
 
 2003-07-19  Antonio Diaz Diaz  <ant_diaz@teleline.es>
 
@@ -204,8 +213,7 @@
 	* Recursive 'layout detector' added.
 
 
-Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012,
-2013, 2014 Antonio Diaz Diaz.
+Copyright (C) 2003-2014 Antonio Diaz Diaz.
 
 This file is a collection of facts, and thus it is not copyrightable,
 but just in case, you have unlimited permission to copy, distribute and

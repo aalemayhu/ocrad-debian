@@ -1,6 +1,6 @@
 #! /bin/sh
 # check script for GNU Ocrad - Optical Character Recognition program
-# Copyright (C) 2009, 2010, 2011, 2012, 2013, 2014 Antonio Diaz Diaz.
+# Copyright (C) 2009-2014 Antonio Diaz Diaz.
 #
 # This script is free software: you have unlimited permission
 # to copy, distribute and modify it.
