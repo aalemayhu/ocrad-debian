@@ -32,7 +32,7 @@
 
 
 Features::Features( const Blob & b_ )
-  : b( b_ ), hbars_( -1 ), vbars_( -1 ),
+  : b( b_ ), hbar_initialized( false ), vbar_initialized( false ),
     lp( b, Profile::left ),
     tp( b, Profile::top ), rp( b, Profile::right ), bp( b, Profile::bottom ),
     hp( b, Profile::height ), wp( b, Profile::width )
@@ -41,12 +41,12 @@ Features::Features( const Blob & b_ )
 
 int Features::hbars() const
   {
-  if( hbars_ < 0 )
+  if( !hbar_initialized )
     {
+    hbar_initialized = true;
     const int limit = ( wp.max() + 1 ) / 2;
     int state = 0, begin = 0, l = 0, r = 0;
     std::vector< int > count( b.height(), 0 );
-    hbars_ = 0;
 
     for( int row = b.top(); row <= b.bottom(); ++row )
       {
@@ -80,21 +80,29 @@ int Features::hbars() const
                 const int height = end - begin + 1;
                 if( height < 1 || 2 * height > 3 * width ) break;
                 hbar_.push_back( Rectangle( l, begin, r, end ) );
-                ++hbars_; break;
+                break;
         }
       }
+    while( hbar_.size() > 3 )			// remove noise hbars
+      {
+      int wmin = hbar_[0].width();
+      for( unsigned i = 1; i < hbar_.size(); ++i )
+        if( hbar_[i].width() < wmin ) wmin = hbar_[i].width();
+      for( int i = hbar_.size() - 1; i >= 0; --i )
+        if( hbar_[i].width() == wmin ) hbar_.erase( hbar_.begin() + i );
+      }
     }
-  return hbars_;
+  return hbar_.size();
   }
 
 
 int Features::vbars() const		// FIXME small gaps not detected
   {
-  if( vbars_ < 0 )
+  if( !vbar_initialized )
     {
+    vbar_initialized = true;
     int state = 0, begin = 0, limit = b.height();
     limit -= ( b.height() < 40 ) ? 3 : b.height() / 10;
-    vbars_ = 0;
 
     for( int col = b.left(); col <= b.right(); ++col )
       {
@@ -128,12 +136,12 @@ int Features::vbars() const		// FIXME small gaps not detected
                   {
                   int end = ( count * 3 < limit * 2 ) ? col - 1 : col;
                   vbar_.push_back( Rectangle( begin, b.top(), end, b.bottom() ) );
-                  ++vbars_; state = 0;
+                  state = 0;
                   }
         }
       }
     }
-  return vbars_;
+  return vbar_.size();
   }
 
 
@@ -276,7 +284,19 @@ int Features::test_misc( const Rectangle & charbox ) const
 
     if( b.height() > 2 * b.width() && 5 * b.height() >= 4 * charbox.height() &&
         lp.max() + rp.max() < b.width() )
+      {
+      if( 5 * rp[rp.pos(50)] > 2 * b.width() )
+        {
+        const int row = b.seek_top( b.vpos( 75 ), b.hpos( 75 ) );
+        if( ( b.top() < charbox.top() ||
+              b.bottom() <= charbox.bottom() + ( b.height() / 5 ) ) &&
+            row <= b.top() ) return 'L';
+        if( row > b.top() &&
+            b.seek_bottom( b.vpos( 75 ), b.hpos( 75 ) ) < b.bottom() )
+          return '[';
+        }
       return '|';
+      }
     }
 
   return 0;

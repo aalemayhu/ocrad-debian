@@ -182,9 +182,10 @@ bool Profile::increasing( int i, const int min_delta )
 bool Profile::decreasing( int i, int end )
   {
   if( limit_ < 0 ) initialize();
-  const int noise = ( std::min( samples(), limit_ ) / 20 ) + 1;
-  if( end < 0 || end > samples() - noise ) end = samples() - noise;
-  if( i < 0 || end - i <= 2 * noise || data[i] - data[end-1] <= noise )
+  const int dnoise = ( samples() / 20 ) + 1;			// domain noise
+  const int rnoise = ( std::min( samples(), limit_ ) / 20 ) + 1; // range noise
+  if( end < 0 || end > samples() - dnoise ) end = samples() - dnoise;
+  if( i < 0 || end - i <= 2 * rnoise || data[i] - data[end-1] <= rnoise )
     return false;
   while( ++i < end ) if( data[i] > data[i-1] ) return false;
   return true;

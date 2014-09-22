@@ -18,7 +18,7 @@
 class Features
   {
   const Blob & b;		// Blob to witch these features belong
-  mutable int hbars_, vbars_;
+  mutable bool hbar_initialized, vbar_initialized;
   mutable std::vector< Rectangle > hbar_, vbar_;
   mutable std::vector< std::vector< Csegment > > row_scan, col_scan;
 

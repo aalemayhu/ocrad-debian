@@ -1,7 +1,7 @@
 Changes in version 0.24:
 
 Character recognition has been improved.
-(merged 'TZ' and 'rt', '9' vs 'g', 'A' vs 'R', 'C' vs '(').
+(merged 'TZ', 'LZ' and 'rt', '9' vs 'g', 'A' vs 'R', 'C' vs '(', 's', 'x', 'L').
 
 Several filters can be now applied in sequence using more than one
 "--filter" option.
