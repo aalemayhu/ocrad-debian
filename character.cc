@@ -360,6 +360,8 @@ void Character::apply_filter( const Filter::Type filter )
         {
         for( int i = 1; i < guesses(); ++i )
           if( UCS::isalpha( gv[i].code ) ) { swap_guesses( 0, i ); break; }
+        if( gv[0].code == '+' && 2 * height() > 3 * width() )
+          { gv[0].code = 't'; break; }
         if( !UCS::isalpha( gv[0].code ) )
           gv[0].code = UCS::to_nearest_letter( gv[0].code );
         if( remove && !UCS::isalpha( gv[0].code ) ) clear_guesses();

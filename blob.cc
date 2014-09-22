@@ -281,6 +281,14 @@ void Blob::find_holes()
     delete &h; holepv.erase( holepv.begin() + i );
     }
 /*
+  while( holepv.size() > 3 )
+    {
+    int smin = holepv[0]->size();
+    for( unsigned i = 1; i < holepv.size(); ++i )
+      if( holepv[i]->size() < smin ) smin = holepv[i]->size();
+    for( int i = holepv.size() - 1; i >= 0; --i )
+      if( holepv[i]->size() == smin ) holepv.erase( holepv.begin() + i );
+    }
   for( unsigned i = holepv.size(); i > 0; )
     {
     Bitmap & h = *holepv[--i];

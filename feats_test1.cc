@@ -142,9 +142,8 @@ int Features::test_4ADQao( const Charset & charset, const Rectangle & charbox ) 
       if( c == 4 && Ocrad::similar( left_delta, right_delta, 40 ) && lp.ispit() )
         return '@';
       }
-    if( tp.minima() == 1 && bp.istip() && !lp.isconvex() && !rp.isctip( 66 ) )
-      return 'A';
     }
+  if( tp.minima() == 1 && bp.istip() && !rp.isctip( 66 ) ) return 'A';
   if( Ocrad::similar( left_delta, right_delta, 50 ) )
     {
     if( bp.minima() == 1 && rp.isconvex() && b.test_BD() ) return 'D';
@@ -211,7 +210,8 @@ int Features::test_6abd( const Charset & charset ) const
     row2 = b.seek_top( row2, rcol );
     if( row2 <= b.top() ) return 'b';
     const int m = tp.minima( b.height() / 2 );
-    if( m == 1 ) return 's'; else if( m == 2 ) return 'k'; else return 0;
+    if( m == 1 && bp.minima() == 1 ) return 's';
+    if( m == 2 ) return 'k'; else return 0;
     }
 
   if( b.escape_left( row, col ) )

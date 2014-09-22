@@ -160,20 +160,19 @@ int Features::test_EFIJLlT( const Charset & charset ) const
 
   const int noise = ( std::min( b.height(), b.width() ) / 30 ) + 1;
   {
-  int col;
-  if( 2 * ( lp[lp.pos(50)] + noise ) >= b.width() ) col = b.hpos( 25 );
-  else col = b.hpos( 75 );
+  const bool maybe_j = ( 2 * ( lp[lp.pos(50)] + noise ) >= b.width() );
+  const int col = b.hpos( maybe_j ? 25 : 75 );
   int row = b.seek_top( b.vcenter(), col );
   if( row <= b.top() || ( row < b.vpos( 25 ) && b.escape_top( row, col ) ) )
     {
     int hdiff;
     if( b.bottom_hook( &hdiff ) )
       {
-      if( hdiff > b.height() / 2 && rp.increasing( rp.pos( 80 ), 1 ) &&
-          !rp.decreasing() ) return 'J';
-      if( -hdiff > b.height() / 2 )
+      if( maybe_j && hdiff > b.height() / 2 &&
+          rp.increasing( rp.pos( 80 ), 1 ) && !rp.decreasing() ) return 'J';
+      if( !maybe_j && -hdiff > b.height() / 2 )
         {
-        if( 5 * lp[lp.pos(80)] >= 2 * b.width() ) return 'v';
+        if( 5 * lp[lp.pos(80)] >= 2 * b.width() ) return 'v';	// broken 'v'
         if( col > b.hcenter() ) return 'L';
         }
       }
@@ -183,7 +182,7 @@ int Features::test_EFIJLlT( const Charset & charset ) const
   const int vnoise = ( b.height() / 30 ) + 1;
   const int topmax = b.top() + vnoise;
   const int botmin = b.bottom() - vnoise;
-  if( vbars() == 1 && vbar(0).width() >= 2 && 2 * vbar(0).width() < b.width() )
+  if( vbars() == 1 && vbar(0).width() >= 2 && 2 * vbar(0).width() <= b.width() )
     {
     if( std::abs( vbar(0).hcenter() - b.hcenter() ) <= noise &&
         std::abs( (vbar(0).left() - b.left()) - (b.right() - vbar(0).right()) ) <= 2 * noise )
@@ -191,9 +190,9 @@ int Features::test_EFIJLlT( const Charset & charset ) const
       if( hbars() == 1 && 4 * hbar(0).height() <= b.height() )
         {
         if( ( hbar(0).top() <= topmax || hbar(0).bottom() < b.vpos( 15 ) ) &&
-            hbar(0).width() > 2 * wp[wp.pos(75)] )
+            hbar(0).width() >= wp[wp.pos(75)] + wp[wp.pos(80)] )
           return 'T';
-        if( std::abs( hbar(0).vcenter() - b.vcenter() ) <= 1 &&
+        if( std::abs( hbar(0).vcenter() - b.vcenter() ) <= vnoise &&
             hbar(0).width() >= b.width() &&
             Ocrad::similar( b.height(), b.width(), 50 ) ) return '+';
         }
@@ -307,7 +306,7 @@ int Features::test_EFIJLlT( const Charset & charset ) const
       }
     }
   if( hbars() == 1 && hbar(0).width() >= b.width() &&
-      std::abs( hbar(0).vcenter() - b.vcenter() ) <= 1 &&
+      std::abs( hbar(0).vcenter() - b.vcenter() ) <= vnoise &&
       Ocrad::similar( b.height(), b.width(), 50 ) &&
       tp.isupit() && bp.isupit() )
     return '+';
@@ -438,7 +437,7 @@ int Features::test_frst( const Rectangle & charbox ) const
               tp.minima( noise ) == 2 ||
               ( rp.minima() == 1 && ( b.height() < charbox.height() || tp.iminimum() > tp.pos( 50 ) ) ) )
             { if( b.height() <= 3 * wp.max() ) return 'r'; else return 0; }
-          else if( 3 * b.height() >= 5 * b.width() ) return 'f';
+          else if( 3 * b.height() >= 5 * b.width() && !rp.istip() ) return 'f';
           }
         else
           {
@@ -547,8 +546,9 @@ int Features::test_HKMNUuvwYy( const Rectangle & charbox ) const
             return 'Y';
           }
         }
-      if( b.escape_top( b.vpos( 60 ), b.hcenter() ) && !lp.istip() )
-        return 'u';
+      if( b.escape_top( b.vpos( 60 ), b.hcenter() ) && !lp.istip() &&
+          ( 4 * b.height() >= 3 * b.width() ||
+            segments_in_col( b.hpos( 75 ) ) <= 2 ) ) return 'u';
       if( lg < rg + 1 && !lp.increasing( lp.pos( 50 ) ) &&
           ( 2 * lg < rg || b.vpos( 90 ) >= charbox.bottom() ) &&
           ( tp.minima( b.height()/2 ) == 1 || lp.imaximum() > b.height()/2 ) )
@@ -625,7 +625,7 @@ int Features::test_hknwx( const Rectangle & charbox ) const
   const int m8 = tp.minima( b.height() / 8 );
 
   if( m8 == 2 && bp.minima( b.height() / 2 ) == 1 &&
-      ( ( lp.istip() && rp.istip() ) ||
+      ( ( lp.isctip() && rp.isctip() ) ||
         ( lp.isconcave() && rp.isconcave() ) ) ) return 'x';
 
   if( b.width() >= b.height() && tp.ispit() &&
