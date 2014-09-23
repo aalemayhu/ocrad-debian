@@ -1,6 +1,7 @@
-ocrad (0.24~rc2-1) UNRELEASED; urgency=medium
+ocrad (0.24~rc2-1) unstable; urgency=medium
 
   * New upstream release.
+  * Upload to unstable.
 
  -- Alexander Alemayhu <alexander@bitraf.no>  Mon, 22 Sep 2014 19:44:20 +0200
 
