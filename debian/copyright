@@ -6,21 +6,21 @@ License: GPL-3+
 
 Files: doc/ocrad.info doc/ocrad.texi
 Copyright: © 2003-2014 Antonio Diaz Diaz
-License: GNU-Ocrad
+License: GNUAllPermissive
   .
   This manual is free documentation: you have unlimited permission
   to copy, distribute and modify it.
 
 Files: INSTALL README
 Copyright: © 2003-2014 Antonio Diaz Diaz
-License: GNU-Ocrad
+License: GNUAllPermissive
   .
   This file is free documentation: you have unlimited permission to copy,
   distribute and modify it.
 
 Files: rational.cc rational.h
 Copyright: © 2003-2014 Antonio Diaz Diaz
-License: GNU-Ocrad
+License: GNUAllPermissive
   .
   This library is free software: you have unlimited permission to
   copy, distribute and modify it.
@@ -31,14 +31,14 @@ License: GNU-Ocrad
 
 Files: testsuite/check.sh
 Copyright: © 2003-2014 Antonio Diaz Diaz
-License: GNU-Ocrad
+License: GNUAllPermissive
   .
   This script is free software: you have unlimited permission
   to copy, distribute and modify it.
 
 Files: configure
 Copyright: © 2003-2014 Antonio Diaz Diaz
-License: GNU-Ocrad
+License: GNUAllPermissive
   .
   This configure script is free software: you have unlimited permission
   to copy, distribute and modify it.

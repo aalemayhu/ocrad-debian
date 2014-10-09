@@ -1,3 +1,13 @@
+ocrad (0.24-1) UNRELEASED; urgency=medium
+
+  * New upstream release.
+  * debian/copyright:
+    - According to upstream some of the licenses are from an old version of
+    GNUAllPermissive. Changed the short name from GNU-Ocrad to
+    GNUAllPermissive.
+
+ -- Alexander Alemayhu <alexander@bitraf.no>  Thu, 09 Oct 2014 06:42:13 +0200
+
 ocrad (0.24~rc2-1) unstable; urgency=medium
 
   * New upstream release.
