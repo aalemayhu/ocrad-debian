@@ -1,4 +1,4 @@
-ocrad (0.24-1) UNRELEASED; urgency=medium
+ocrad (0.24-1) unstable; urgency=medium
 
   * New upstream release.
   * debian/copyright:
@@ -8,15 +8,9 @@ ocrad (0.24-1) UNRELEASED; urgency=medium
     - Add license information for ocradcheck.cc.
   * debian/control:
     - Bump Standards-Version from 3.9.5 to 3.9.6.
-
- -- Alexander Alemayhu <alexander@bitraf.no>  Thu, 09 Oct 2014 06:42:13 +0200
-
-ocrad (0.24~rc2-1) unstable; urgency=medium
-
-  * New upstream release.
   * Upload to unstable.
 
- -- Alexander Alemayhu <alexander@bitraf.no>  Mon, 22 Sep 2014 19:44:20 +0200
+ -- Alexander Alemayhu <alexander@bitraf.no>  Thu, 09 Oct 2014 06:42:13 +0200
 
 ocrad (0.24~rc1-1) experimental; urgency=medium
 
