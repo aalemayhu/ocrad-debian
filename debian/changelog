@@ -5,6 +5,7 @@ ocrad (0.24-1) UNRELEASED; urgency=medium
     - According to upstream some of the licenses are from an old version of
     GNUAllPermissive. Changed the short name from GNU-Ocrad to
     GNUAllPermissive.
+    - Add license information for ocradcheck.cc.
   * debian/control:
     - Bump Standards-Version from 3.9.5 to 3.9.6.
 
