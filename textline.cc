@@ -364,7 +364,7 @@ void Textline::apply_filter( const Filter::Type filter )
     const int median_height = hist.median();
     for( int i = characters() - 1; i >= 0; --i )
       if( !character(i).maybe(' ') &&
-          !Ocrad::similar( character(i).height(), median_height, 10, 2 ) )
+          !Ocrad::similar( character(i).height(), median_height, 13, 2 ) )
         { delete_character( i ); modified = true; }
     }
   if( modified )		// remove leadind/trailing/duplicate spaces

@@ -43,7 +43,13 @@ int Features::test_49ARegpq( const Rectangle & charbox ) const
     if( tp.isvpit() || rp.decreasing() ||
         ( rp.decreasing( 1, rp.pos( 20 ) ) && lp.decreasing( 1, lp.pos( 20 ) ) ) )
       return 'A';
-    else return 'R';
+    if( hbars() == 2 && hbar(1).width() >= b.width() )
+      {
+      const int i = hbar(1).top() - b.top();
+      const int j = hbar(1).bottom() - b.top();
+      if( rp.area( i, j ) <= lp.area( i, j ) ) return 'A';
+      }
+    return 'R';
     }
 
   int col = h.hcenter();

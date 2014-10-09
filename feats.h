@@ -45,7 +45,7 @@ public:
   int test_49ARegpq( const Rectangle & charbox ) const;
   int test_4ADQao( const Charset & charset, const Rectangle & charbox ) const;
   int test_6abd( const Charset & charset ) const;
-  int test_EFIJLlT( const Charset & charset ) const;
+  int test_EFIJLlT( const Charset & charset, const Rectangle & charbox ) const;
   int test_c() const;
   int test_frst( const Rectangle & charbox ) const;
   int test_G() const;

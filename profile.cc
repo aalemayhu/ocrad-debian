@@ -162,7 +162,7 @@ int Profile::operator[]( int i )
 int Profile::area( const int l, int r )
   {
   if( limit_ < 0 ) initialize();
-  if( r < 0 ) r = samples() - 1;
+  if( r < 0 || r >= samples() ) r = samples() - 1;
   int a = 0;
   for( int i = l; i <= r; ++i ) a += data[i];
   return a;
@@ -238,7 +238,7 @@ bool Profile::isconvex()
       }
     if( l >= r || l >= pos( 25 ) || r <= pos( 75 ) ) return isconvex_;
     if( lmin >= 0 || rmax <= 0 || data[l] < 2 || data[r] < 2 ||
-        3 * ( data[l] + data[r] ) <= std::min( limit_, samples() ) )
+        3 * ( data[l] + data[r] ) <= std::min( samples(), limit_ ) )
       return isconvex_;
     if( 3 * ( min_end - min_begin + 1 ) > 2 * samples() ) return isconvex_;
     if( 2 * l >= min_begin || 2 * r <= min_end + samples() - 1 ) return isconvex_;
@@ -371,26 +371,6 @@ bool Profile::iscpit( const int cpos )
   }
 
 
-bool Profile::islpit()
-  {
-  if( limit_ < 0 ) initialize();
-  if( samples() < 5 ) return false;
-  const int noise = ( samples() / 30 ) + 1;
-  if( data[0] < noise + 1 ) return false;
-
-  const int dmin = min();
-  int begin = 0, ref = limit_;
-  for( int i = 0; i < samples() - noise; ++i )
-    {
-    int d = data[i];
-    if( d == dmin ) { begin = i; break; }
-    if( d < ref ) ref = d; else if( d > ref + 1 ) return false;
-    }
-  if( begin < 2 || 2 * begin > samples() ) return false;
-  return true;
-  }
-
-
 bool Profile::istpit()
   {
   if( istpit_ < 0 )
@@ -399,7 +379,7 @@ bool Profile::istpit()
     if( limit_ < 5 || samples() < 5 || !ispit() )
       { istpit_ = false; return istpit_; }
 
-    const int noise = ( std::min( limit_, samples() ) / 30 ) + 1;
+    const int noise = ( std::min( samples(), limit_ ) / 30 ) + 1;
     int l = -1, r = 0;
     for( int i = 0; i < samples(); ++i )
       if( data[i] <= noise ) { r = i; if( l < 0 ) l = i; }
@@ -538,6 +518,26 @@ bool Profile::isctip( const int cpos )
       break;
       }
   return false;
+  }
+
+
+bool Profile::isltip()
+  {
+  if( limit_ < 0 ) initialize();
+  if( samples() < 5 ) return false;
+  const int noise = ( samples() / 30 ) + 1;
+  if( data[0] < noise + 1 ) return false;
+
+  const int dmin = min();
+  int begin = 0, ref = limit_;
+  for( int i = 0; i < samples() - noise; ++i )
+    {
+    int d = data[i];
+    if( d == dmin ) { begin = i; break; }
+    if( d < ref ) ref = d; else if( d > ref + 1 ) return false;
+    }
+  if( begin < 2 || 2 * begin > samples() ) return false;
+  return true;
   }
 
 

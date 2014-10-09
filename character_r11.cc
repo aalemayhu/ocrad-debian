@@ -66,13 +66,14 @@ void Character::recognize110( const Charset & charset, const Rectangle & charbox
   if( b.height() < 5 || ( b.height() < 8 && b.width() < 6 ) ||
       b.height() > 10 * b.width() || 5 * b.height() < b.width() ) return;
 
-  code = f.test_EFIJLlT( charset );  if( code ) { add_guess( code, 0 ); return; }
-  code = f.test_frst( charbox );     if( code ) { add_guess( code, 0 ); return; }
-  code = f.test_G();                 if( code ) { add_guess( code, 0 ); return; }
-  code = f.test_c();                 if( code ) { add_guess( code, 0 ); return; }
+  code = f.test_EFIJLlT( charset, charbox );
+  if( code ) { add_guess( code, 0 ); return; }
+  code = f.test_frst( charbox );   if( code ) { add_guess( code, 0 ); return; }
+  code = f.test_G();               if( code ) { add_guess( code, 0 ); return; }
+  code = f.test_c();               if( code ) { add_guess( code, 0 ); return; }
   if( charset.enabled( Charset::iso_8859_9 ) )
-    { code = f.test_s_cedilla();     if( code ) { add_guess( code, 0 ); return; } }
-  code = f.test_235Esz( charset );   if( code ) { add_guess( code, 0 ); return; }
+    { code = f.test_s_cedilla();   if( code ) { add_guess( code, 0 ); return; } }
+  code = f.test_235Esz( charset ); if( code ) { add_guess( code, 0 ); return; }
   code = f.test_HKMNUuvwYy( charbox );
   if( code == 'u' && f.lp.istpit() )	// Looks for merged 'tr'
     {

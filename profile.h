@@ -56,12 +56,12 @@ public:
   bool isflats();
   bool ispit();
   bool iscpit( const int cpos = 50 );
-  bool islpit();
   bool istpit();
   bool isupit();
   bool isvpit();
   bool istip();
   bool isctip( const int cpos = 50 );
+  bool isltip();
   int  imaximum();
   int  iminimum( const int m = 0, int th = -1 );
   int  minima( int th = -1 );

@@ -6,8 +6,8 @@
 @finalout
 @c %**end of header
 
-@set UPDATED 19 September 2014
-@set VERSION 0.24-rc2
+@set UPDATED 3 October 2014
+@set VERSION 0.24
 
 @dircategory GNU Packages
 @direntry
@@ -147,7 +147,7 @@ without change.@*
 @w{@samp{--filter=numbers_only}}, same as @w{@samp{--filter=numbers}}
 but other characters will be discarded.@*
 @w{@samp{--filter=same_height}} discards any character (or noise) whose
-height differs in more than 10 percent from the median height of the
+height differs in more than 13 percent from the median height of the
 characters in the line.@*
 @w{@samp{--filter=upper_num}} forces every character that resembles a
 uppercase letter or a number to be recognized as such. Other characters

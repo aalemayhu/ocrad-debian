@@ -1,23 +1,13 @@
-2014-09-19  Antonio Diaz Diaz  <antonio@gnu.org>
+2014-10-03  Antonio Diaz Diaz  <antonio@gnu.org>
 
-	* Version 0.24-rc2 released.
-	* Improvements in character recognition.
-
-2014-09-15  Antonio Diaz Diaz  <antonio@gnu.org>
-
-	* Version 0.24-rc1 released.
+	* Version 0.24 released.
 	* Improvements in character recognition.
 	* Allow more than one '-e, --filter' option.
-	* Added new filter 'same_height'.
+	* Added new filters 'same_height', 'upper_num' and 'upper_num_only'.
 	* New file histogram.h.
-	* License changed to GPL version 2 or later.
-
-2014-06-04  Antonio Diaz Diaz  <antonio@gnu.org>
-
-	* Version 0.24-pre1 released.
-	* Added new filters 'upper_num' and 'upper_num_only'.
 	* ocrcheck.cc: Renamed to ocradcheck.cc.
 	* ocrad.texi: Fixed description of OCRAD_result_blocks.
+	* License changed to GPL version 2 or later.
 
 2014-03-10  Antonio Diaz Diaz  <antonio@gnu.org>
 
