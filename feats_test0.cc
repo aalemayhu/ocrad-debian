@@ -145,7 +145,8 @@ int Features::test_235Esz( const Charset & charset ) const
       if( !tbopen && ( 2 * lp[lp.pos(50)] ) + 2 >= b.width() &&
           ( tp.isconvex() || ( tp.ispit() && !bp.ispit() ) ) )
         return '2';
-      if( b.height() <= 2 * wp.max() && bp[bp.pos(75)] <= b.height() / 10 )
+      if( 2 * b.height() <= 5 * wp.max() && bp[bp.pos(75)] <= b.height() / 10 &&
+          Ocrad::similar( wp.max( 0, wp.pos(30) ), wp.max( wp.pos(70) ), 20 ) )
         return 'z';
       }
     }
@@ -153,7 +154,7 @@ int Features::test_235Esz( const Charset & charset ) const
   }
 
 
-int Features::test_EFIJLlT( const Charset & charset ) const
+int Features::test_EFIJLlT( const Charset & charset, const Rectangle & charbox ) const
   {
   if( tp.minima( b.height() / 4 ) != 1 || bp.minima( b.height() / 4 ) != 1 )
     return 0;
@@ -244,14 +245,20 @@ int Features::test_EFIJLlT( const Charset & charset ) const
         }
       }
 
-    if( vbar(0).left() > b.hcenter() &&
-        hbars() == 1 && hbar(0).top() <= topmax &&
-        hbar(0).width() + 1 >= b.width() )
+    if( vbar(0).left() > b.hcenter() && hbars() == 1 )
       {
-      if( charset.enabled( Charset::iso_8859_15 ) ||
-          charset.enabled( Charset::iso_8859_9 ) )
-        if( b.width() > b.height() ) return UCS::NOT;
-      return 0;
+      if( vbar(0).right() >= b.hpos( 90 ) && hbar(0).bottom() >= botmin &&
+          Ocrad::similar( hbar(0).width(), b.width(), 10 ) &&
+          b.bottom() > charbox.vpos( 90 ) &&
+          b.escape_top( b.vcenter(), b.hpos( 25 ) ) )
+        { if( b.height() > b.width() ) return 'J'; else return 0; }
+      if( hbar(0).top() <= topmax && hbar(0).width() + 1 >= b.width() )
+        {
+        if( charset.enabled( Charset::iso_8859_15 ) ||
+            charset.enabled( Charset::iso_8859_9 ) )
+          if( b.width() > b.height() ) return UCS::NOT;
+        return 0;
+        }
       }
     }
 
@@ -325,7 +332,7 @@ int Features::test_c() const
       { if( lp.isconvex() ) return '('; else return 0; }
 
     if( urow > b.top() && lrow < b.bottom() && rp.isctip() &&
-        ( bp.ispit() || tp.ispit() || ( bp.islpit() && tp.islpit() ) ) &&
+        ( bp.ispit() || tp.ispit() || ( bp.isltip() && tp.isltip() ) ) &&
         b.escape_right( b.vcenter(), b.hcenter() ) )
       return 'c';
     }
@@ -359,7 +366,7 @@ int Features::test_frst( const Rectangle & charbox ) const
       {
       if( -2 * b_hdiff > b.height() )
         {
-        if( b.height() >= 3 * wp.max() &&
+        if( b.height() >= 3 * wp.max() && !lp.ispit() &&
             ( hbars() == 0 || hbar(0).bottom() < b.vpos( 20 ) ) ) return 'l';
         if( 2 * wp[wp.pos(6)] < b.width() && hbars() >= 1 && hbars() <= 2 &&
             hbar(0).top() >= b.vpos( 15 ) && hbar(0).bottom() < b.vcenter() &&
@@ -463,7 +470,7 @@ int Features::test_G() const
   if( lp.isconvex() || lp.ispit() )
     {
     int col = 0, row = 0;
-    for( int i = rp.pos( 30 ); i <= rp.pos( 60 ); ++i )
+    for( int i = rp.pos( 60 ); i >= rp.pos( 30 ); --i )
       if( rp[i] > col ) { col = rp[i]; row = i; }
     if( col == 0 ) return 0;
     row += b.top(); col = b.right() - col + 1;
@@ -480,9 +487,10 @@ int Features::test_G() const
         if( b.seek_right( lrow, b.hcenter() ) >= b.right() ) break;
       for( urow = lrow - 1 ; urow > b.top(); --urow )
         if( b.seek_right( urow, b.hcenter() ) < b.right() ) break;
-      lrow += noise; urow -= noise;
+      lrow += noise;
       if( lrow < row && urow > b.top() )
         {
+        urow -= std::min( noise, ( urow - b.top() ) / 2 );
         int uwidth = b.seek_left( urow, b.right() ) - b.seek_right( urow, b.hcenter() );
         int lwidth = b.seek_left( lrow, b.right() ) - b.seek_right( lrow, b.hcenter() );
         if( lrow - noise <= b.vcenter() || lwidth > uwidth + noise )
@@ -507,9 +515,14 @@ int Features::test_HKMNUuvwYy( const Rectangle & charbox ) const
         ( m5 == 1 ||
           ( m5 == 2 && Ocrad::similar( bp.iminimum(), bp.pos( 50 ), 10 ) ) ) )
       {
+      const int stem = std::min( tp.range() + ( b.height() / 10 ), wp.pos(90) );
+      const bool maybe_Y = ( 5 * tp.range() <= 3 * b.height() ||
+        ( stem <= wp.pos(75) && 5 * wp[stem] <= b.width() ) );
       const int lg = lp.min( lp.pos( 90 ) );
       if( lg > 1 && bp.isvpit() && tp.minima( b.height() / 2 ) == 2 &&
-          lp[lp.pos(75)] <= lg ) return 'v';
+          lp[lp.pos(75)] <= lg &&
+          ( !maybe_Y || 3 * wp[stem] > b.width() || wp[stem] > wp[wp.pos(90)] + 1 ) )
+        return 'v';
       int hdiff;
       if( b.bottom_hook( &hdiff ) )
         {
@@ -529,7 +542,7 @@ int Features::test_HKMNUuvwYy( const Rectangle & charbox ) const
       const int rg2 = rp.max( rp.pos( 70 ), rp.pos( 90 ) );
       const int lc = ( lg + ( 2 * ( lp.limit() - rg ) ) ) / 3;
       const int lc2 = ( lg2 + lp.limit() - rg2 ) / 2;
-      if( bp.ispit() && 7 * tp.range() < 4 * b.height() )
+      if( bp.ispit() && maybe_Y )
         {
         int row2 = b.top();
         while( row2 < b.bottom() && segments_in_row( row2 ) != 2 ) ++row2;
