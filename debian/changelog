@@ -10,6 +10,8 @@ ocrad (0.24-1) unstable; urgency=medium
     - Bump Standards-Version from 3.9.5 to 3.9.6.
   * Upload to unstable.
 
+  * Upload sponsored by Petter Reinholdtsen.
+
  -- Alexander Alemayhu <alexander@bitraf.no>  Thu, 09 Oct 2014 06:42:13 +0200
 
 ocrad (0.24~rc1-1) experimental; urgency=medium
