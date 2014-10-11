@@ -11,7 +11,7 @@ File: ocrad.info,  Node: Top,  Next: Character sets,  Up: (dir)
 GNU Ocrad Manual
 ****************
 
-This manual is for GNU Ocrad (version 0.24, 3 October 2014).
+This manual is for GNU Ocrad (version 0.25-pre1, 7 October 2014).
 
 
    GNU Ocrad is an OCR (Optical Character Recognition) program and
@@ -127,6 +127,8 @@ The format for running ocrad is:
      '--filter=upper_num' forces every character that resembles a
      uppercase letter or a number to be recognized as such. Other
      characters will be output without change.
+     '--filter=upper_num_mark', same as '--filter=upper_num', but other
+     characters will be marked as unrecognized.
      '--filter=upper_num_only', same as '--filter=upper_num', but other
      characters will be discarded.
      Try '--filter=help' for a list of valid filter names.
@@ -556,16 +558,16 @@ Concept index
 
 Tag Table:
 Node: Top196
-Node: Character sets1544
-Node: Invoking ocrad2689
-Node: Library version7543
-Node: Library functions8222
-Node: Library error codes13340
-Node: Image format conversion14891
-Node: Algorithm16415
-Node: OCR results file17892
-Node: Problems20160
-Node: Concept index20696
+Node: Character sets1549
+Node: Invoking ocrad2694
+Node: Library version7668
+Node: Library functions8347
+Node: Library error codes13465
+Node: Image format conversion15016
+Node: Algorithm16540
+Node: OCR results file18017
+Node: Problems20285
+Node: Concept index20821
 
 End Tag Table
 

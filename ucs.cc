@@ -356,6 +356,8 @@ int UCS::to_nearest_upper_num( const int code )
   {
   switch( code )
     {
+    case '(':
+    case '[':     return 'C';
     case 'l':
     case '|':     return 'I';
     case DEG:     return 'O';

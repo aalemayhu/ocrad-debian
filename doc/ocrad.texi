@@ -6,8 +6,8 @@
 @finalout
 @c %**end of header
 
-@set UPDATED 3 October 2014
-@set VERSION 0.24
+@set UPDATED 7 October 2014
+@set VERSION 0.25-pre1
 
 @dircategory GNU Packages
 @direntry
@@ -152,6 +152,8 @@ characters in the line.@*
 @w{@samp{--filter=upper_num}} forces every character that resembles a
 uppercase letter or a number to be recognized as such. Other characters
 will be output without change.@*
+@w{@samp{--filter=upper_num_mark}}, same as @w{@samp{--filter=upper_num}},
+but other characters will be marked as unrecognized.@*
 @w{@samp{--filter=upper_num_only}}, same as @w{@samp{--filter=upper_num}},
 but other characters will be discarded.@*
 Try @w{@samp{--filter=help}} for a list of valid filter names.

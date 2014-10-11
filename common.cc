@@ -48,6 +48,7 @@ const F_entry F_table[] =
   { "numbers_only",   Filter::numbers_only },
   { "same_height",    Filter::same_height },
   { "upper_num",      Filter::upper_num },
+  { "upper_num_mark", Filter::upper_num_mark },
   { "upper_num_only", Filter::upper_num_only },
   { 0, (Filter::Type)0 }
   };
