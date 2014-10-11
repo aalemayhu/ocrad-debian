@@ -32,6 +32,10 @@ the main archive.
 5. Type 'make install' to install the program, the library and any data
    files and documentation.
 
+   Or type 'make install-compress', which additionally compresses the
+   info manual and the man page after installation. (Installing
+   compressed docs may become the default in the future).
+
    You can install only the program, the info manual or the man page by
    typing 'make install-bin', 'make install-info' or 'make install-man'
    respectively.

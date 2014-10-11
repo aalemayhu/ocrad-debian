@@ -1,3 +1,8 @@
+2014-10-07  Antonio Diaz Diaz  <antonio@gnu.org>
+
+	* Version 0.25-pre1 released.
+	* Added new filter 'upper_num_mark'.
+
 2014-10-03  Antonio Diaz Diaz  <antonio@gnu.org>
 
 	* Version 0.24 released.

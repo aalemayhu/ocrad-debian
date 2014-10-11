@@ -353,7 +353,8 @@ void Textline::apply_filter( const Filter::Type filter )
     Character & c = character( i );
     if( !c.guesses() ) continue;
     c.apply_filter( filter );
-    if( !c.guesses() ) { delete_character( i ); modified = true; }
+    if( !c.guesses() && filter != Filter::upper_num_mark )
+      { delete_character( i ); modified = true; }
     }
   if( filter == Filter::same_height )
     {
@@ -365,6 +366,13 @@ void Textline::apply_filter( const Filter::Type filter )
     for( int i = characters() - 1; i >= 0; --i )
       if( !character(i).maybe(' ') &&
           !Ocrad::similar( character(i).height(), median_height, 13, 2 ) )
+        { delete_character( i ); modified = true; }
+    }
+  if( filter == Filter::upper_num_mark )
+    {
+    for( int i = characters() - 1; i > 0; --i )
+      if( !character(i).guesses() &&
+            character(i).h_overlaps( character( i - 1 ) ) )
         { delete_character( i ); modified = true; }
     }
   if( modified )		// remove leadind/trailing/duplicate spaces

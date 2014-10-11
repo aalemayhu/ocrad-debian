@@ -62,7 +62,7 @@ public:
 
 namespace Filter {
 enum Type { letters, letters_only, numbers, numbers_only,
-            same_height, upper_num, upper_num_only };
+            same_height, upper_num, upper_num_mark, upper_num_only };
 } // end namespace Filter
 
 
