@@ -293,7 +293,7 @@ int Track::vcenter( const int col ) const
   return 0;
   }
 
-
+/*
 bool Track::includes( const Rectangle & r ) const
   {
   for( unsigned i = 0; i < data.size(); ++i )
@@ -333,4 +333,4 @@ bool Track::includes( const int row, const int col ) const
     return tmp.includes( row, col );
     }
   return false;
-  }
+  }*/

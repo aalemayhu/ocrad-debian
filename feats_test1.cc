@@ -115,39 +115,37 @@ int Features::test_4ADQao( const Charset & charset, const Rectangle & charbox ) 
   int left_delta = h.left() - b.left(), right_delta = b.right() - h.right();
 
   if( !lp.ispit() && lp.isflats() && rp.ispit() ) return 'D';
-  if( !rp.isconvex() )
+  if( Ocrad::similar( left_delta, right_delta, 40 ) &&
+      tp.minima() == 2 && bp.minima() == 2 && !rp.isconvex() ) return '#';
+  if( tp.minima() == 1 && bp.minima() == 1 )
     {
-    if( Ocrad::similar( left_delta, right_delta, 40 ) &&
-        tp.minima() == 2 && bp.minima() == 2 ) return '#';
-    if( tp.minima() == 1 && bp.minima() == 1 )
+    int row = b.seek_bottom( h.bottom(), h.hcenter(), false );
+    if( charset.enabled( Charset::iso_8859_15 ) ||
+        charset.enabled( Charset::iso_8859_9 ) )
+      if( !lp.isconvex() && bp.isconvex() && !rp.isconvex() &&
+          b.seek_bottom( row, h.hcenter() ) < b.bottom() )
+        return UCS::SEACUTE;
+    row = ( row + b.seek_bottom( row, h.hcenter() ) ) / 2;
+    if( row < b.bottom() - 1 && !lp.isflats() &&
+        b.seek_left( row, h.hcenter() ) <= b.left() )
       {
-      int row = b.seek_bottom( h.bottom(), h.hcenter(), false );
-      if( charset.enabled( Charset::iso_8859_15 ) ||
-          charset.enabled( Charset::iso_8859_9 ) )
-        if( !lp.isconvex() && bp.isconvex() &&
-            b.seek_bottom( row, h.hcenter() ) < b.bottom() )
-          return UCS::SEACUTE;
-      row = ( row + b.seek_bottom( row, h.hcenter() ) ) / 2;
-      if( row < b.bottom() - 1 && !lp.isflats() &&
-          b.seek_left( row, h.hcenter() ) <= b.left() )
-        {
-        if( wp[h.top()-b.top()] < wp[h.bottom()-b.top()] ) return '4';
-        return 'Q';
-        }
+      if( ( 2 * h.height() <= b.height() || 2 * h.width() <= b.width() ) &&
+          wp[h.top()-b.top()] < wp[h.bottom()-b.top()] ) return '4';
+      if( !rp.ispit() && !rp.isconvex() ) return 'Q';
       }
-    if( 2 * b.width() > 5 * h.width() )
-      {
-      const int c = segments_in_row( h.vcenter() );
-      const int m = bp.minima();
-      if( c == 3 && h.top() < b.vcenter() && h.bottom() > b.vcenter() &&
-          3 * h.height() >= b.height() && ( m == 3 || m == 2 ) && !lp.ispit() )
-        return 'm';
-      if( c == 3 && left_delta > right_delta && lp.ispit() &&
-          segments_in_col( h.hcenter() ) == 4 )
-        return '@';
-      if( c == 4 && Ocrad::similar( left_delta, right_delta, 40 ) && lp.ispit() )
-        return '@';
-      }
+    }
+  if( 2 * b.width() > 5 * h.width() && !rp.isconvex() )
+    {
+    const int c = segments_in_row( h.vcenter() );
+    const int m = bp.minima();
+    if( c == 3 && h.top() < b.vcenter() && h.bottom() > b.vcenter() &&
+        3 * h.height() >= b.height() && ( m == 3 || m == 2 ) && !lp.ispit() )
+      return 'm';
+    if( c == 3 && left_delta > right_delta && lp.ispit() &&
+        segments_in_col( h.hcenter() ) == 4 )
+      return '@';
+    if( c == 4 && Ocrad::similar( left_delta, right_delta, 40 ) && lp.ispit() )
+      return '@';
     }
   if( tp.minima() == 1 && bp.istip() && !rp.isctip( 66 ) ) return 'A';
   if( Ocrad::similar( left_delta, right_delta, 50 ) )

@@ -526,7 +526,7 @@ bool Profile::isltip()
   if( limit_ < 0 ) initialize();
   if( samples() < 5 ) return false;
   const int noise = ( samples() / 30 ) + 1;
-  if( data[0] < noise + 1 ) return false;
+  if( data[0] <= noise ) return false;
 
   const int dmin = min();
   int begin = 0, ref = limit_;
@@ -534,9 +534,29 @@ bool Profile::isltip()
     {
     int d = data[i];
     if( d == dmin ) { begin = i; break; }
-    if( d < ref ) ref = d; else if( d > ref + 1 ) return false;
+    if( d < ref ) ref = d; else if( d > ref + noise ) return false;
     }
-  if( begin < 2 || 2 * begin > samples() ) return false;
+  if( begin <= noise || 2 * begin > samples() ) return false;
+  return true;
+  }
+
+
+bool Profile::isrtip()
+  {
+  if( limit_ < 0 ) initialize();
+  if( samples() < 5 ) return false;
+  const int noise = ( samples() / 30 ) + 1;
+  if( data[samples()-1] <= noise ) return false;
+
+  const int dmin = min();
+  int begin = 0, ref = limit_;
+  for( int i = samples() - 1; i >= noise; --i )
+    {
+    int d = data[i];
+    if( d == dmin ) { begin = samples() - 1 - i; break; }
+    if( d < ref ) ref = d; else if( d > ref + noise ) return false;
+    }
+  if( begin <= noise || 2 * begin > samples() ) return false;
   return true;
   }
 

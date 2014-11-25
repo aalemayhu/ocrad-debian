@@ -1,7 +1,19 @@
+2014-11-12  Antonio Diaz Diaz  <antonio@gnu.org>
+
+	* Version 0.25-pre3 released.
+	* Improvements in character recognition.
+	* Added new filter 'text_block'.
+
+2014-10-21  Antonio Diaz Diaz  <antonio@gnu.org>
+
+	* Version 0.25-pre2 released.
+	* Improvements in character recognition.
+
 2014-10-07  Antonio Diaz Diaz  <antonio@gnu.org>
 
 	* Version 0.25-pre1 released.
 	* Added new filter 'upper_num_mark'.
+	* Makefile.in: Added new targets 'install*-compress'.
 
 2014-10-03  Antonio Diaz Diaz  <antonio@gnu.org>
 

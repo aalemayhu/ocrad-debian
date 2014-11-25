@@ -71,6 +71,8 @@ public:
   const Guess & guess( const int i ) const;
   int guesses() const { return gv.size(); }
   bool maybe( const int code ) const;
+  bool isalnum() const
+    { return ( gv.size() > 0 && UCS::isalnum( gv[0].code ) ); }
 //  bool maybe_digit() const;
 //  bool maybe_letter() const;
 

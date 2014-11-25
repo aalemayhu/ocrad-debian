@@ -102,6 +102,8 @@ int Features::test_235Esz( const Charset & charset ) const
           ( lp[lrow2 + 1 - b.top()] < lcol2 - b.left() ||
             lp[urow3 - 1 - b.top()] < ucol3 - b.left() ) )
         {
+        for( int i = lp.pos( 40 ); i <= lp.pos( 70 ); ++i )
+          if( 5 * lp[i] < b.width() && 2 * lp[i+1] > b.width() ) return '5';
         int c = 0, hdiff;
         if( !b.top_hook( &hdiff ) || 5 * hdiff >= 4 * b.height() ) ++c;
         if( 2 * lp[lrow2 - b.top()] < lcol2 - b.left() ) ++c;
@@ -143,7 +145,7 @@ int Features::test_235Esz( const Charset & charset ) const
     else if( b.escape_left( urow2, ucol2 ) )
       {
       if( !tbopen && ( 2 * lp[lp.pos(50)] ) + 2 >= b.width() &&
-          ( tp.isconvex() || ( tp.ispit() && !bp.ispit() ) ) )
+          ( tp.isconvex() || ( (tp.ispit() || tp.isrtip()) && !bp.ispit() ) ) )
         return '2';
       if( 2 * b.height() <= 5 * wp.max() && bp[bp.pos(75)] <= b.height() / 10 &&
           Ocrad::similar( wp.max( 0, wp.pos(30) ), wp.max( wp.pos(70) ), 20 ) )
@@ -191,7 +193,8 @@ int Features::test_EFIJLlT( const Charset & charset, const Rectangle & charbox )
       if( hbars() == 1 && 4 * hbar(0).height() <= b.height() )
         {
         if( ( hbar(0).top() <= topmax || hbar(0).bottom() < b.vpos( 15 ) ) &&
-            hbar(0).width() >= wp[wp.pos(75)] + wp[wp.pos(80)] )
+            hbar(0).width() >= wp[wp.pos(75)] + wp[wp.pos(80)] &&
+            4 * lp[lp.pos(50)] >= b.width() )
           return 'T';
         if( std::abs( hbar(0).vcenter() - b.vcenter() ) <= vnoise &&
             hbar(0).width() >= b.width() &&
@@ -205,10 +208,9 @@ int Features::test_EFIJLlT( const Charset & charset, const Rectangle & charbox )
       }
     }
 
-  if( vbars() == 1 && vbar(0).width() >= 2 &&
-      2 * vbar(0).width() <= b.width() )
+  if( vbars() == 1 && vbar(0).width() >= 2 )
     {
-    if( vbar(0).right() <= b.hcenter() )
+    if( 2 * vbar(0).width() <= b.width() && vbar(0).right() <= b.hcenter() )
       {
       if( ( hbars() == 2 || hbars() == 3 ) && hbar(0).top() <= topmax &&
           hbar(0).width() + 1 >= hbar(1).width() &&
@@ -245,18 +247,19 @@ int Features::test_EFIJLlT( const Charset & charset, const Rectangle & charbox )
         }
       }
 
-    if( vbar(0).left() > b.hcenter() && hbars() == 1 )
+    if( 3 * vbar(0).width() < 2 * b.width() && vbar(0).left() > b.hpos( 33 ) &&
+        hbars() == 1 )
       {
       if( vbar(0).right() >= b.hpos( 90 ) && hbar(0).bottom() >= botmin &&
-          Ocrad::similar( hbar(0).width(), b.width(), 10 ) &&
+          hbar(0).left() == b.left() &&
           b.bottom() > charbox.vpos( 90 ) &&
           b.escape_top( b.vcenter(), b.hpos( 25 ) ) )
         { if( b.height() > b.width() ) return 'J'; else return 0; }
-      if( hbar(0).top() <= topmax && hbar(0).width() + 1 >= b.width() )
+      if( hbar(0).top() <= topmax && hbar(0).width() + 1 >= b.width() &&
+          b.width() > b.height() )
         {
         if( charset.enabled( Charset::iso_8859_15 ) ||
-            charset.enabled( Charset::iso_8859_9 ) )
-          if( b.width() > b.height() ) return UCS::NOT;
+            charset.enabled( Charset::iso_8859_9 ) ) return UCS::NOT;
         return 0;
         }
       }
@@ -416,7 +419,8 @@ int Features::test_frst( const Rectangle & charbox ) const
                 4 * hbar(0).height() <= b.height() &&
                 4 * lp[lp.pos(50)] >= b.width() )
               return 'T';
-            return 'r';
+            if( 3 * rp[rp.pos(50)] > b.width() ) return 'r';
+            return 0;
             }
           }
         }
@@ -588,7 +592,7 @@ int Features::test_HKMNUuvwYy( const Rectangle & charbox ) const
         if( hbars() == 1 && 5 * ( hbar(0).height() - 1 ) < b.height() &&
             hbar(0).top() >= b.vpos( 30 ) && hbar(0).bottom() <= b.vpos( 60 ) &&
             10 * hbar(0).width() > 9 * wp[hbar(0).vcenter()-b.top()] &&
-            Ocrad::similar( col_segment( hbar(0).vcenter(), hbar(0).hcenter() ).size(),
+            Ocrad::similar( v_segment( hbar(0).vcenter(), hbar(0).hcenter() ).size(),
                             hbar(0).height(), 30, 2 ) )
           {
           if( 9 * hbar(0).width() <= 10 * wp[wp.pos(50)] ) return 'H';

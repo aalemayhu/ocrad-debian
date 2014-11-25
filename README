@@ -14,7 +14,7 @@ See the file INSTALL for compilation and installation instructions.
 Try "ocrad --help" for usage instructions.
 
 Caveats.
-For best results, the characters should be at least 20 pixels high. If
+For best results the characters should be at least 20 pixels high. If
 they are smaller, try the --scale option. Scanning the image at 300 dpi
 usually produces a character size good enough for ocrad.
 Merged characters are always a problem. Try to avoid them.

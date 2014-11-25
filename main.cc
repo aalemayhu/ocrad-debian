@@ -125,6 +125,11 @@ void show_help()
                "UTF-8 formats. The pbm, pgm and ppm formats are collectively known as pnm.\n"
                "\nOcrad includes a layout analyser able to separate the columns or blocks\n"
                "of text normally found on printed pages.\n"
+               "\nFor best results the characters should be at least 20 pixels high. If\n"
+               "they are smaller, try the --scale option. Scanning the image at 300 dpi\n"
+               "usually produces a character size good enough for ocrad.\n"
+               "Merged, very bold or very light (broken) characters are normally not\n"
+               "recognized correctly. Try to avoid them.\n"
                "\nUsage: %s [options] [files]\n", invocation_name );
   std::printf( "\nOptions:\n"
                "  -h, --help               display this help and exit\n"
@@ -150,7 +155,7 @@ void show_help()
                  "  -C, --copy               'copy' input to output (debug)\n"
                  "  -D, --debug=<level>      (0-100) output intermediate data (debug)\n" );
     }
-  std::printf( "If no files are specified, ocrad reads the image from standard input.\n"
+  std::printf( "\nIf no files are specified, ocrad reads the image from standard input.\n"
                "If the -o option is not specified, ocrad sends text to standard output.\n"
                "\nExit status: 0 for a normal exit, 1 for environmental problems (file\n"
                "not found, invalid flags, I/O errors, etc), 2 to indicate a corrupt or\n"
