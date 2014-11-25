@@ -248,6 +248,17 @@ bool UCS::isupper( const int code )
   }
 
 
+bool UCS::isupper_normal_width( const int code )
+  {
+  if( code >= 128 || !std::isupper( code ) ) return false;
+  switch( code )
+    {
+    case 'I': case 'J': case 'L': case 'M': case 'Q': case 'W': return false;
+    default : return true;
+    }
+  }
+
+
 bool UCS::isvowel( int code )
   {
   if( code >= 128 ) code = base_letter( code );

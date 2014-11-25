@@ -68,6 +68,6 @@ public:
   int top( const int col ) const;
   int vcenter( const int col ) const;
 
-  bool includes( const Rectangle & r ) const;
-  bool includes( const int row, const int col ) const;
+//  bool includes( const Rectangle & r ) const;
+//  bool includes( const int row, const int col ) const;
   };

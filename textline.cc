@@ -127,6 +127,15 @@ Rectangle Textline::charbox( const Character & c ) const
   }
 
 
+bool Textline::is_key_character( const int i ) const
+  {
+  if( i < big_initials_ || i >= characters() )
+    Ocrad::internal_error( "is_key_character, index out of bounds." );
+  return ( cpv[i]->isalnum() && cpv[i]->guess( 0 ).code != 'J' &&
+           cpv[i]->height() < 2 * height() && 2 * cpv[i]->height() > height() );
+  }
+
+
 void Textline::delete_character( const int i )
   {
   if( i < 0 || i >= characters() )
@@ -297,8 +306,8 @@ void Textline::dprint( const Control & control, const bool graph,
     for( int i = 0; i < characters(); ++i )
       if( !character(i).maybe(' ') )
         hist.add_sample( character(i).height() );
-    std::fprintf( control.outfile, "mean height = %d, median height = %d, track segments = %d\n",
-                  mean_height(), hist.median(), segments() );
+    std::fprintf( control.outfile, "mean height = %d, median height = %d, track segments = %d, big initials = %d\n",
+                  mean_height(), hist.median(), segments(), big_initials_ );
     }
 
   for( int i = 0; i < characters(); ++i )
@@ -348,14 +357,6 @@ void Textline::recognize1( const Charset & charset ) const
 void Textline::apply_filter( const Filter::Type filter )
   {
   bool modified = false;
-  for( int i = characters() - 1; i >= 0; --i )
-    {
-    Character & c = character( i );
-    if( !c.guesses() ) continue;
-    c.apply_filter( filter );
-    if( !c.guesses() && filter != Filter::upper_num_mark )
-      { delete_character( i ); modified = true; }
-    }
   if( filter == Filter::same_height )
     {
     Histogram hist;
@@ -365,19 +366,35 @@ void Textline::apply_filter( const Filter::Type filter )
     const int median_height = hist.median();
     for( int i = characters() - 1; i >= 0; --i )
       if( !character(i).maybe(' ') &&
-          !Ocrad::similar( character(i).height(), median_height, 13, 2 ) )
+          !Ocrad::similar( character(i).height(), median_height, 10, 2 ) )
         { delete_character( i ); modified = true; }
     }
-  if( filter == Filter::upper_num_mark )
+  else
     {
-    for( int i = characters() - 1; i > 0; --i )
-      if( !character(i).guesses() &&
-            character(i).h_overlaps( character( i - 1 ) ) )
-        { delete_character( i ); modified = true; }
-    }
-  if( modified )		// remove leadind/trailing/duplicate spaces
     for( int i = characters() - 1; i >= 0; --i )
-      if( character(i).maybe(' ') &&
-          ( i == 0 || i == characters() - 1 || character(i-1).maybe(' ') ) )
-        delete_character( i );
+      {
+      Character & c = character( i );
+      if( !c.guesses() ) continue;
+      c.apply_filter( filter );
+      if( !c.guesses() && filter != Filter::upper_num_mark )
+        { delete_character( i ); modified = true; }
+      }
+    if( filter == Filter::upper_num_mark )
+      {
+      for( int i = characters() - 1; i > 0; --i )
+        if( !character(i).guesses() &&
+              character(i).h_overlaps( character( i - 1 ) ) )
+          { delete_character( i ); modified = true; }
+      }
+    }
+  if( modified ) remove_leadind_trailing_duplicate_spaces();
+  }
+
+
+void Textline::remove_leadind_trailing_duplicate_spaces()
+  {
+  for( int i = characters() - 1; i >= 0; --i )
+    if( character(i).maybe(' ') &&
+        ( i == 0 || i == characters() - 1 || character(i-1).maybe(' ') ) )
+      delete_character( i );
   }

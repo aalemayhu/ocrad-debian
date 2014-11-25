@@ -1,3 +1,13 @@
 Changes in version 0.25:
 
-The new filter "upper_num_mark" has been added.
+Character recognition has been improved. ('2' vs 'Z', '4' vs 'Q',
+'5' vs 'S', 'E', 'J', merged 'VV').
+
+The new filters "text_block" and "upper_num_mark" have been added.
+
+The output of "--help" has been extended.
+
+The targets "install-compress", "install-strip-compress",
+"install-info-compress" and "install-man-compress" have been added to
+the Makefile. (Installing compressed docs may become the default in the
+future).

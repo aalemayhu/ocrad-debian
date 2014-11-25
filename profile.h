@@ -62,6 +62,7 @@ public:
   bool istip();
   bool isctip( const int cpos = 50 );
   bool isltip();
+  bool isrtip();
   int  imaximum();
   int  iminimum( const int m = 0, int th = -1 );
   int  minima( int th = -1 );

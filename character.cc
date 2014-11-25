@@ -380,6 +380,7 @@ void Character::apply_filter( const Filter::Type filter )
         }
       break;
     case Filter::same_height: break;		// handled at line level
+    case Filter::text_block: break;		// handled at block level
     case Filter::upper_num_mark:		// fall through
     case Filter::upper_num_only:
       remove = true;				// fall through

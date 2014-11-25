@@ -39,47 +39,107 @@ Features::Features( const Blob & b_ )
   {}
 
 
+void Features::row_scan_init() const
+  {
+  int l = -1;			// begin of segment. -1 means no segment
+  row_scan.resize( b.height() );
+
+  for( int row = b.top(); row <= b.bottom(); ++row )
+    for( int col = b.left(); col <= b.right(); ++col )
+      {
+      bool black = b.get_bit( row, col );
+      if( l < 0 && black ) l = col;			// begin of segment
+      if( l >= 0 && ( !black || col == b.right() ) )	// end of segment
+        { row_scan[row-b.top()].push_back( Csegment( l, col - !black ) );
+          l = -1; }
+      }
+  }
+
+
+void Features::col_scan_init() const
+  {
+  int t = -1;			// begin of segment. -1 means no segment
+  col_scan.resize( b.width() );
+
+  for( int col = b.left(); col <= b.right(); ++col )
+    for( int row = b.top(); row <= b.bottom(); ++row )
+      {
+      bool black = b.get_bit( row, col );
+      if( t < 0 && black ) t = row;			// begin of segment
+      if( t >= 0 && ( !black || row == b.bottom() ) )	// end of segment
+        { col_scan[col-b.left()].push_back( Csegment( t, row - !black ) );
+          t = -1; }
+      }
+  }
+
+
 int Features::hbars() const
   {
   if( !hbar_initialized )
     {
     hbar_initialized = true;
+    if( row_scan.empty() ) row_scan_init();
+    std::vector< Csegment > segv;
+    segv.reserve( b.height() );
+
+    for( unsigned i = 0; i < row_scan.size(); ++i )
+      {
+      if( row_scan[i].size() == 1 )
+        { segv.push_back( row_scan[i][0] ); continue; }
+      int maxsize = 0, jmax = -1;
+      for( unsigned j = 0; j < row_scan[i].size(); ++j )
+        {
+        const int size = row_scan[i][j].size();
+        if( maxsize < size ) { maxsize = size; jmax = j; }
+        }
+      if( jmax >= 0 ) segv.push_back( row_scan[i][jmax] );
+      else segv.push_back( Csegment() );
+      }
+
     const int limit = ( wp.max() + 1 ) / 2;
     int state = 0, begin = 0, l = 0, r = 0;
-    std::vector< int > count( b.height(), 0 );
-
-    for( int row = b.top(); row <= b.bottom(); ++row )
+    for( int i = 0; i < b.height(); ++i )
       {
-      int col, c = 0, lt = 0, rt = 0, x = 0;
-      int & maxcount = count[row-b.top()];
-      for( col = b.left(); col <= b.right(); ++col )
-        {
-        if( b.get_bit( row, col ) )
-          { ++c; x = col; if( col < b.right() ) continue; }
-        if( c > maxcount ) { maxcount = c; rt = x; lt = rt - c + 1; }
-        c = 0;
-        }
+      Csegment & seg = segv[i];
       switch( state )
         {
-        case 0: if( maxcount > limit )
-                  { state = 1; begin = row; l = lt; r = rt; }
-                else break;
-        case 1: if( maxcount > limit )
+        case 0: if( seg.size() <= limit ) break;
+                state = 1; begin = i; l = seg.left; r = seg.right;
+                if( i < b.height() - 1 ) break;
+        case 1: if( seg.size() > limit &&
+                    ( i <= begin || seg.overlaps( segv[i-1] ) ) )
                   {
-                  if( lt < l ) l = lt;
-                  if( rt > r ) r = rt;
-                  if( row < b.bottom() ) break;
+                  if( seg.left < l ) l = seg.left;
+                  if( seg.right > r ) r = seg.right;
+                  if( i < b.height() - 1 ) break;
                   }
                 state = 0;
-                int end = ( maxcount <= limit ) ? row - 1 : row;
+                int end = ( seg.size() <= limit ) ? i - 1 : i;
                 const int width = r - l + 1;
-                while( begin <= end && 3 * count[begin-b.top()] < 2 * width )
+                while( begin <= end && 3 * segv[begin].size() < 2 * width )
                   ++begin;
-                while( begin <= end && 3 * count[end-b.top()] < 2 * width )
+                while( begin <= end && 3 * segv[end].size() < 2 * width )
                   --end;
                 const int height = end - begin + 1;
-                if( height < 1 || 2 * height > 3 * width ) break;
-                hbar_.push_back( Rectangle( l, begin, r, end ) );
+                if( height < 1 || height > width ) break;
+                const int margin = std::max( height, ( b.height() / 10 ) + 1 );
+                if( begin >= margin )
+                  {
+                  bool good = false;
+                  for( int j = margin; j > 0; --j )
+                    if( 3 * segv[begin-j].size() <= 2 * width )
+                      { good = true; break; }
+                  if( !good ) break;
+                  }
+                if( end + margin < b.height() )
+                  {
+                  bool good = false;
+                  for( int j = margin; j > 0; --j )
+                    if( 3 * segv[end+j].size() <= 2 * width )
+                      { good = true; break; }
+                  if( !good ) break;
+                  }
+                hbar_.push_back( Rectangle( l, begin+b.top(), r, end+b.top() ) );
                 break;
         }
       }
@@ -145,55 +205,7 @@ int Features::vbars() const		// FIXME small gaps not detected
   }
 
 
-// return the number of vertical traces crossing every row
-//
-int Features::segments_in_row( const int row ) const
-  {
-  if( row_scan.empty() )
-    {
-    int l = -1;			// begin of segment. -1 means no segment
-    row_scan.resize( b.height() );
-
-    for( int row = b.top(); row <= b.bottom(); ++row )
-      for( int col = b.left(); col <= b.right(); ++col )
-        {
-        bool black = b.get_bit( row, col );
-        if( l < 0 && black ) l = col;			// begin of segment
-        if( l >= 0 && ( !black || col == b.right() ) )	// end of segment
-          { row_scan[row-b.top()].push_back( Csegment( l, col - !black ) );
-            l = -1; }
-        }
-    }
-  return row_scan[row-b.top()].size();
-  }
-
-
-// return the number of horizontal traces crossing every column
-//
-int Features::segments_in_col( const int col ) const
-  {
-  if( col_scan.empty() )
-    {
-    int t = -1;			// begin of segment. -1 means no segment
-    col_scan.resize( b.width() );
-
-    for( int col = b.left(); col <= b.right(); ++col )
-      for( int row = b.top(); row <= b.bottom(); ++row )
-        {
-        bool black = b.get_bit( row, col );
-        if( t < 0 && black ) t = row;			// begin of segment
-        if( t >= 0 && ( !black || row == b.bottom() ) )	// end of segment
-          { col_scan[col-b.left()].push_back( Csegment( t, row - !black ) );
-            t = -1; }
-        }
-    }
-  return col_scan[col-b.left()].size();
-  }
-
-
-// return the column segment containing the point (row,col) if any
-//
-Csegment Features::col_segment( const int row, const int col ) const
+Csegment Features::v_segment( const int row, const int col ) const
   {
   const int segments = segments_in_col( col );
   for( int i = 0; i < segments; ++i )

@@ -32,6 +32,8 @@ struct Csegment			// cartesian (one-dimensional) segment
     { return ( seg.valid() && left <= seg.left && seg.right <= right ); }
   bool includes( const int col ) const
     { return ( left <= col && col <= right ); }
+  bool overlaps( const Csegment & seg ) const
+    { return ( valid() && seg.valid() && left <= seg.right && right >= seg.left ); }
 
   int distance( const Csegment & seg ) const;
   int distance( const int col ) const;

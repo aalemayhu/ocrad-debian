@@ -27,6 +27,7 @@
 #include "segment.h"
 #include "mask.h"
 #include "track.h"
+#include "ucs.h"
 #include "bitmap.h"
 #include "blob.h"
 #include "character.h"

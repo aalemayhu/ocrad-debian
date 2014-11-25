@@ -41,6 +41,8 @@ public:
   int width() const
     { return cpv.empty() ? 0 : cpv.back()->right() - cpv.front()->left(); }
 
+  bool is_key_character( const int i ) const;	// isalnum of normal size
+
   void delete_character( const int i );
   int  shift_characterp( Character * const p, const bool big = false );
   bool insert_space( const int i, const bool tab = false );
@@ -62,4 +64,5 @@ public:
   void recognize1( const Charset & charset ) const;
   void recognize2( const Charset & charset );
   void apply_filter( const Filter::Type filter );
+  void remove_leadind_trailing_duplicate_spaces();
   };

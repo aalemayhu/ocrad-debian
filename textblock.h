@@ -22,6 +22,8 @@ class Textblock : public Rectangle
   Textblock( const Textblock & );		// declared as private
   void operator=( const Textblock & );		// declared as private
 
+  void apply_filters( const Control & control );
+
 public:
   Textblock( const Rectangle & page, const Rectangle & block,
              std::vector< Blob * > & blobp_vector );

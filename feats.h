@@ -25,6 +25,9 @@ class Features
   Features( const Features & );			// declared as private
   void operator=( const Features & );		// declared as private
 
+  void row_scan_init() const;
+  void col_scan_init() const;
+
 public:
   mutable Profile lp, tp, rp, bp, hp, wp;
 
@@ -37,9 +40,21 @@ public:
   int hbars() const;
   int vbars() const;
 
-  int segments_in_row( const int row ) const;
-  int segments_in_col( const int col ) const;
-  Csegment col_segment( const int row, const int col ) const;
+      // number of vertical traces crossing every row
+  int segments_in_row( const int row ) const
+    {
+    if( row_scan.empty() ) row_scan_init();
+    return row_scan[row-b.top()].size();
+    }
+      // number of horizontal traces crossing every column
+  int segments_in_col( const int col ) const
+    {
+    if( col_scan.empty() ) col_scan_init();
+    return col_scan[col-b.left()].size();
+    }
+
+           // vertical segment containing the point (row,col), if any
+  Csegment v_segment( const int row, const int col ) const;
 
   int test_235Esz( const Charset & charset ) const;
   int test_49ARegpq( const Rectangle & charbox ) const;

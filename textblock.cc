@@ -26,6 +26,7 @@
 #include "rational.h"
 #include "rectangle.h"
 #include "track.h"
+#include "ucs.h"
 #include "bitmap.h"
 #include "blob.h"
 #include "character.h"
@@ -86,6 +87,54 @@ void join_characters( std::vector< Textline * > & tlpv )
   }
 
 } // end namespace
+
+
+void Textblock::apply_filters( const Control & control )
+  {
+  if( textlines() <= 0 ) return;
+  for( unsigned f = 0; f < control.filters.size(); ++f )
+    {
+    const Filter::Type filter = control.filters[f];
+    if( filter != Filter::text_block )
+      {
+      for( int i = 0; i < textlines(); ++i )
+        tlpv[i]->apply_filter( filter );
+      continue;
+      }
+    int l = right(), t = bottom(), r = left(), b = top();
+    for( int i = 0; i < textlines(); ++i )
+      {
+      const Textline & line = *tlpv[i];
+      int first = line.characters(), last = 0;
+      for( int j = line.big_initials(); j < line.characters(); ++j )
+        if( line.is_key_character( j ) )
+          { l = std::min( l, line.character(j).left() ); first = j; break; }
+      for( int j = line.characters() - 1; j >= first; --j )
+        if( line.is_key_character( j ) )
+          { r = std::max( r, line.character(j).right() ); last = j; break; }
+      if( i == 0 )
+        { for( int j = first; j <= last; ++j )
+            if( line.is_key_character( j ) )
+              t = std::min( t, line.character(j).top() ); }
+      else if( i == textlines() - 1 )
+        { for( int j = first; j <= last; ++j )
+            if( line.is_key_character( j ) )
+              b = std::max( b, line.character(j).bottom() ); }
+      }
+    if( r < l || b < t ) continue;		// can't apply filter; no text
+    Rectangle re( l, t, r, b );
+    for( int i = 0; i < textlines(); ++i )
+      {
+      Textline & line = *tlpv[i];
+      bool modified = false;
+      for( int j = line.characters() - 1; j >= 0; --j )
+        if( line.character(j).height() >= 2 * line.height() ||
+            !re.includes( line.character(j).vcenter(), line.character(j).hcenter() ) )
+          { line.delete_character( j ); modified = true; }
+      if( modified ) line.remove_leadind_trailing_duplicate_spaces();
+      }
+    }
+  }
 
 
 Textblock::Textblock( const Rectangle & page, const Rectangle & block,
@@ -371,9 +420,7 @@ void Textblock::recognize( const Control & control )
     tlpv[i]->recognize2( control.charset );
     }
 
-  for( unsigned j = 0; j < control.filters.size(); ++j )
-    for( int i = 0; i < textlines(); ++i )
-      tlpv[i]->apply_filter( control.filters[j] );
+  apply_filters( control );
 
   // Remove unrecognized lines.
   for( int i = textlines() - 1; i >= 0; --i )

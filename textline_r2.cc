@@ -239,8 +239,9 @@ void Textline::recognize2( const Charset & charset )
         }
       c1.recognize1( charset, charbox( c1 ) );
       c2.recognize1( charset, charbox( c2 ) );
-      if( ( c1.guesses() && c2.guesses() ) ||
-          ( ( c1.guesses() || c2.guesses() ) && c.width() > c.height() ) )
+      const bool good_c2 = ( c2.guesses() && c2.guess( 0 ).code != '\'' );
+      if( ( c1.guesses() && good_c2 ) ||
+          ( ( c1.guesses() || good_c2 ) && c.width() > c.height() ) )
         {
         c = c1; shift_characterp( new Character( c2 ) );
         if( !c1.guesses() ) --i; else if( c2.guesses() ) ++i;
@@ -768,6 +769,48 @@ void Textline::recognize2( const Charset & charset )
         { c1.join( c2 ); c1.only_guess( 'm', 0 ); delete_character( i + 1 ); }
       }
     }
+
+  // separate merged 'VV'
+  {
+  int mean_upper_width = 0;
+  for( int i = big_initials(); i < characters(); ++i )
+    {
+    Character & c = character( i );
+    if( !c.guesses() || c.guess( 0 ).code != 'W' || c.width() <= c.height() ||
+        c.blobs() != 1 || c.blob( 0 ).holes() ) continue;
+    if( mean_upper_width == 0 )
+      {
+      int count = 0;
+      for( int j = big_initials(); j < characters(); ++j )
+        {
+        const Character & cj = character( j );
+        if( cj.guesses() && UCS::isupper_normal_width( cj.guess( 0 ).code ) )
+          { mean_upper_width += cj.width(); ++count; }
+        }
+      if( count <= 0 ) break;			// no characters to compare
+      mean_upper_width /= count;
+      }
+    if( c.width() < 2 * mean_upper_width ) continue;
+    const Blob & b = c.blob( 0 );
+    int row = b.bottom();
+    while( row >= b.top() && b.id( row, b.hcenter() ) == 0 ) --row;
+    if( row >= b.vpos( 20 ) ) continue;
+    Rectangle r1( b.left(), b.top(), b.hcenter() - 1, b.bottom() );
+    Rectangle r2( b.hcenter() + 1, b.top(), b.right(), b.bottom() );
+    Blob b1( b, r1 );
+    Blob b2( b, r2 );
+    b1.adjust_height();
+    b2.adjust_height();
+    if( 2 * b1.height() < b.height() || 2 * b2.height() < b.height() ||
+        !Ocrad::similar( b1.height(), b2.height(), 10, 2 ) ) continue;
+    Character c1( new Blob( b1 ) );
+    Character c2( new Blob( b2 ) );
+    c1.only_guess( 'V', 0 );
+    c2.only_guess( 'V', 0 );
+    c = c1;
+    ++i; cpv.insert( cpv.begin() + i, new Character( c2 ) );
+    }
+  }
 
   // join the secuence '°', '/', 'o', ' ' into a '%'
   for( int i = big_initials(); i + 2 < characters(); ++i )

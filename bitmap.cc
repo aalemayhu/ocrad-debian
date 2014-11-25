@@ -294,8 +294,8 @@ bool Bitmap::escape_right( int row, int col ) const
   for( d = row; d < bottom() - 1; ++d ) if( get_bit( d + 1, col ) ) break;
   while( u <= d && ++col <= right() )
     {
-    if( u > top() + 1 && !get_bit( u, col ) ) --u;
-    if( d < bottom() - 1 && !get_bit( d, col ) ) ++d;
+    while( u > top() + 1 && !get_bit( u, col ) ) --u;
+    while( d < bottom() - 1 && !get_bit( d, col ) ) ++d;
     while( u <= d && get_bit( u, col ) ) ++u;
     while( u <= d && get_bit( d, col ) ) --d;
     }
