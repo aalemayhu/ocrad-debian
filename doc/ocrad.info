@@ -6,27 +6,19 @@ START-INFO-DIR-ENTRY
 END-INFO-DIR-ENTRY
 
 
-File: ocrad.info,  Node: Top,  Next: Character sets,  Up: (dir)
+File: ocrad.info,  Node: Top,  Next: Introduction,  Up: (dir)
 
 GNU Ocrad Manual
 ****************
 
-This manual is for GNU Ocrad (version 0.25-pre3, 12 November 2014).
-
-
-   GNU Ocrad is an OCR (Optical Character Recognition) program and
-library based on a feature extraction method. It reads images in pbm
-(bitmap), pgm (greyscale) or ppm (color) formats and produces text in
-byte (8-bit) or UTF-8 formats. The pbm, pgm and ppm formats are
-collectively known as pnm.
-
-   Ocrad includes a layout analyser able to separate the columns or
-blocks of text normally found on printed pages.
+This manual is for GNU Ocrad (version 0.25-pre4, 14 December 2014).
 
 * Menu:
 
+* Introduction::                Purpose and features of GNU Ocrad
 * Character sets::              Input charsets and output formats
 * Invoking ocrad::              Command line interface
+* Filters::                     Postprocessing the produced text
 * Library version::             Checking library version
 * Library functions::           Descriptions of the library functions
 * Library error codes::         Meaning of codes returned by functions
@@ -43,9 +35,28 @@ blocks of text normally found on printed pages.
 copy, distribute and modify it.
 
 
-File: ocrad.info,  Node: Character sets,  Next: Invoking ocrad,  Prev: Top,  Up: Top
+File: ocrad.info,  Node: Introduction,  Next: Character sets,  Prev: Top,  Up: Top
 
-1 Character sets
+1 Introduction
+**************
+
+GNU Ocrad is an OCR (Optical Character Recognition) program and library
+based on a feature extraction method. It reads images in pbm (bitmap),
+pgm (greyscale) or ppm (color) formats and produces text in
+byte (8-bit) or UTF-8 formats. The pbm, pgm and ppm formats are
+collectively known as pnm.
+
+   Ocrad includes a layout analyser able to separate the columns or
+blocks of text normally found on printed pages.
+
+   For best results the characters should be at least 20 pixels high. If
+they are smaller, try the '--scale' option. Scanning the image at 300
+dpi usually produces a character size good enough for ocrad.
+
+
+File: ocrad.info,  Node: Character sets,  Next: Invoking ocrad,  Prev: Introduction,  Up: Top
+
+2 Character sets
 ****************
 
 The character set internally used by ocrad is ISO 10646, also known as
@@ -71,9 +82,9 @@ so on. Please, don't "embrace and extend" the meaning of prefixes,
 making communication among all people difficult. Thanks.
 
 
-File: ocrad.info,  Node: Invoking ocrad,  Next: Library version,  Prev: Character sets,  Up: Top
+File: ocrad.info,  Node: Invoking ocrad,  Next: Filters,  Prev: Character sets,  Up: Top
 
-2 Invoking ocrad
+3 Invoking ocrad
 ****************
 
 The format for running ocrad is:
@@ -106,34 +117,21 @@ The format for running ocrad is:
 
 '-e NAME'
 '--filter=NAME'
-     Pass the output text through the given postprocessing filter.
-     Several filters can be applied in sequence using more than one
-     '--filter' option. The filters are applied in the order they
-     appear on the command line.
-
-     '--filter=letters' forces every character that resembles a letter
-     to be recognized as a letter. Other characters will be output
-     without change.
-     '--filter=letters_only', same as '--filter=letters', but other
-     characters will be discarded.
-     '--filter=numbers' forces every character that resembles a number
-     to be recognized as a number. Other characters will be output
-     without change.
-     '--filter=numbers_only', same as '--filter=numbers' but other
-     characters will be discarded.
-     '--filter=same_height' discards any character (or noise) whose
-     height differs in more than 10 percent from the median height of
-     the characters in the line.
-     '--filter=text_block' discards any character (or noise) outside of
-     a rectangular block of text lines.
-     '--filter=upper_num' forces every character that resembles a
-     uppercase letter or a number to be recognized as such. Other
-     characters will be output without change.
-     '--filter=upper_num_mark', same as '--filter=upper_num', but other
-     characters will be marked as unrecognized.
-     '--filter=upper_num_only', same as '--filter=upper_num', but other
-     characters will be discarded.
+     Pass the output text through the given built-in postprocessing
+     filter (*note Filters::). Several filters can be applied in
+     sequence using as many '--filter' and '--user-filter' options as
+     needed. The filters are applied in the order they appear on the
+     command line.
      Try '--filter=help' for a list of valid filter names.
+
+'-E FILE'
+'--user-filter=FILE'
+     Pass the output text through the postprocessing filter defined in
+     FILE. See the chapter 'Filters' (*note Filters::) for a
+     description of the format of FILE. Several filters can be applied
+     in sequence using as many '--filter' and '--user-filter' options
+     as needed. The filters are applied in the order they appear on the
+     command line.
 
 '-f'
 '--force'
@@ -171,7 +169,8 @@ The format for running ocrad is:
 '-t NAME'
 '--transform=NAME'
      Perform given transformation (rotation or mirroring) on the input
-     image before scaling, layout analysis and recognition.
+     image before scaling, layout analysis and recognition. Rotations
+     are made counter-clockwise.
      Try '--transform=help' for a list of valid transformation names.
 
 '-T VALUE'
@@ -213,9 +212,124 @@ invalid input file, 3 for an internal consistency error (eg, bug) which
 caused ocrad to panic.
 
 
-File: ocrad.info,  Node: Library version,  Next: Library functions,  Prev: Invoking ocrad,  Up: Top
+File: ocrad.info,  Node: Filters,  Next: Library version,  Prev: Invoking ocrad,  Up: Top
 
-3 Library version
+4 Postprocessing the produced text
+**********************************
+
+Filters replace some characters in the text output with different
+characters and remove some other characters from the output. For
+example, when recognizing a text that is known to contain just numbers,
+any character recognized as a 'Z' will probably be a '2'.
+
+   Filters don't enable the recognition of characters, just filter them
+from the output. Use '--charset' to enable the recognition of a
+character set different from the default ISO-8859-15.
+
+   Ocrad provides both built-in filters and user-defined filters.
+
+4.1 User-defined filters
+========================
+
+The format of a user-defined filter file (*note --user-filter::) is very
+simple. Each line contains a comma-separated list of quoted characters
+('c'), character sets ([0-9A-Z]), character codes (U0063), or character
+ranges (U0000 - UFFFF), and an optional conversion (an equal sign (=)
+followed by a quoted character or a character code). The characters in
+the list are converted to the character in the conversion. If no
+conversion is specified, the character is left unmodified (converted to
+itself).
+
+   Any character not appearing in the file, either by itself or
+included in a set or range, will be discarded. The destination
+character of a conversion is considered as listed by default. Every
+character may be listed more than once, even as part of different
+conversions. The last conversion affecting a given character is the one
+that is performed.
+
+   Character sets and quoted characters may contain escape sequences.
+
+   The character '#' at begin of line or after whitespace starts a
+comment that extends to the end of the line.
+
+   Ranges of characters may be specified in character sets by writing
+the starting and ending characters with a '-' between them. Thus,
+'[A-Z]' matches any ASCII uppercase letter. '-' may be specified by
+placing it first or last. ']' may be specified by placing it first. If
+the first character after the left bracket is '^', it indicates a
+"complemented set", which matches any character except the ones between
+the brackets.
+
+   Literals (quoted characters and character sets) are decoded as
+ISO-8859-15. Character codes are decoded as UCS2. Thus, a 'latin
+capital letter y with diaeresis' is specified in a set as '[\xBE]', but
+its code is 'U0178'.
+
+   Spaces and control characters are unaffected by filters, except that
+leadind, trailing, and duplicate spaces produced by the removal of other
+characters will be themselves removed.
+
+Here is an example user-defined filter file equivalent to the built-in
+filter 'numbers':
+
+     U0000 - U00FF              # remove this line to get 'numbers_only'
+     'D', 'O', 'Q', 'o' = '0'
+     'I', 'L', 'l', '|' = '1'
+     'Z', 'z'           = '2'
+                          '3'
+     'A', 'q'           = '4'
+     'S', 's'           = '5'
+     'G', 'b', U00F3    = '6'   # latin small letter o with acute
+     'J', 'T'           = '7'
+     '&', 'B'           = '8'
+     'g'                = '9'
+
+4.2 Built-in filters
+====================
+
+Ocrad provides the following built-in filters (*note --filter::):
+
+'--filter=letters'
+     Forces every character that resembles a letter to be recognized as
+     a letter. Other characters will be output without change.
+
+'--filter=letters_only'
+     Same as '--filter=letters', but other characters will be discarded.
+
+'--filter=numbers'
+     Forces every character that resembles a number to be recognized as
+     a number. Other characters will be output without change.
+
+'--filter=numbers_only'
+     Same as '--filter=numbers' but other characters will be discarded.
+
+'--filter=same_height'
+     Discards any character (or noise) whose height differs in more
+     than 10 percent from the median height of the characters in the
+     line.
+
+'--filter=text_block'
+     Discards any character (or noise) outside of a rectangular block
+     of text lines.
+
+'--filter=upper_num'
+     Forces every character that resembles a uppercase letter or a
+     number to be recognized as such. Other characters will be output
+     without change.
+
+'--filter=upper_num_mark'
+     Same as '--filter=upper_num', but other characters will be marked
+     as unrecognized.
+
+'--filter=upper_num_only'
+     Same as '--filter=upper_num', but other characters will be
+     discarded.
+
+
+
+File: ocrad.info,  Node: Library version,  Next: Library functions,  Prev: Filters,  Up: Top
+
+5 Library version
 *****************
 
  -- Function: const char * OCRAD_version ( void )
@@ -235,7 +349,7 @@ used by the application.
 
 File: ocrad.info,  Node: Library functions,  Next: Library error codes,  Prev: Library version,  Up: Top
 
-4 Library functions
+6 Library functions
 *******************
 
 These are the OCRAD library functions. In case of error, all of them
@@ -344,7 +458,7 @@ must be verified by calling 'OCRAD_get_errno' before using it.
 
 File: ocrad.info,  Node: Library error codes,  Next: Image format conversion,  Prev: Library functions,  Up: Top
 
-5 Library error codes
+7 Library error codes
 *********************
 
 Most library functions return -1 or a null pointer to indicate that they
@@ -383,7 +497,7 @@ failed. If the call failed, then you can examine 'OCRAD_get_errno'.
 
 File: ocrad.info,  Node: Image format conversion,  Next: Algorithm,  Prev: Library error codes,  Up: Top
 
-6 Image format conversion
+8 Image format conversion
 *************************
 
 There are a lot of image formats, but ocrad is able to decode only three
@@ -429,7 +543,7 @@ ocrad can manage.
 
 File: ocrad.info,  Node: Algorithm,  Next: OCR results file,  Prev: Image format conversion,  Up: Top
 
-7 Algorithm
+9 Algorithm
 ***********
 
 Ocrad is mainly a research project. Many of the algorithms ocrad uses
@@ -458,15 +572,11 @@ binary search.
 drawbacks. It makes ocrad very sensitive to character defects, and makes
 difficult to modify ocrad to recognize new characters.
 
-   For best results, the characters should be at least 20 pixels high.
-If they are smaller, try the -scale option. Scanning the image at 300
-dpi usually produces a character size good enough for ocrad.
-
 
 File: ocrad.info,  Node: OCR results file,  Next: Problems,  Prev: Algorithm,  Up: Top
 
-8 OCR results file
-******************
+10 OCR results file
+*******************
 
 Calling ocrad with option '-x' produces an OCR results file (ORF), that
 is, a parsable file containing the OCR results. The ORF format is as
@@ -513,14 +623,14 @@ For each line in every text block, the following data follows:
      by the confidence value V, without space between them. The higher
      the value of confidence, the more confident is the result.
 
-   Running './ocrad -x test.orf examples/test.pbm' in the source
+   Running './ocrad -x test.orf testsuite/test.pbm' in the source
 directory will give you an example ORF file.
 
 
 File: ocrad.info,  Node: Problems,  Next: Concept index,  Prev: OCR results file,  Up: Top
 
-9 Reporting bugs
-****************
+11 Reporting bugs
+*****************
 
 There are probably bugs in ocrad. There are certainly errors and
 omissions in this manual. If you report them, they will get fixed. If
@@ -542,10 +652,12 @@ Concept index
 
 * algorithm:                             Algorithm.             (line 6)
 * bugs:                                  Problems.              (line 6)
+* filters:                               Filters.               (line 6)
 * getting help:                          Problems.              (line 6)
 * image format conversion:               Image format conversion.
                                                                 (line 6)
 * input charsets:                        Character sets.        (line 6)
+* introduction:                          Introduction.          (line 6)
 * invoking:                              Invoking ocrad.        (line 6)
 * library error codes:                   Library error codes.   (line 6)
 * library functions:                     Library functions.     (line 6)
@@ -560,16 +672,20 @@ Concept index
 
 Tag Table:
 Node: Top196
-Node: Character sets1551
-Node: Invoking ocrad2696
-Node: Library version7782
-Node: Library functions8461
-Node: Library error codes13579
-Node: Image format conversion15130
-Node: Algorithm16654
-Node: OCR results file18131
-Node: Problems20399
-Node: Concept index20935
+Node: Introduction1264
+Node: Character sets1998
+Node: Invoking ocrad3152
+Ref: --filter4098
+Ref: --user-filter4475
+Node: Filters7513
+Node: Library version11935
+Node: Library functions12607
+Node: Library error codes17725
+Node: Image format conversion19276
+Node: Algorithm20800
+Node: OCR results file22074
+Node: Problems24345
+Node: Concept index24883
 
 End Tag Table
 

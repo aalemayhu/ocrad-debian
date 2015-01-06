@@ -1,3 +1,12 @@
+2014-12-14  Antonio Diaz Diaz  <antonio@gnu.org>
+
+	* Version 0.25-pre4 released.
+	* Added new option '-E, --user-filter'.
+	* Recognize uppercase 'Y' with acute and 'Y' with diaeresis.
+	* textline_r2.cc: Recognize uppercase 'S' and 'Z' with caron.
+	* ocrad.texi: Added chapters 'Introduction' and 'Filters'.
+	* testsuite/test.pbm: Added 11 new characters.
+
 2014-11-12  Antonio Diaz Diaz  <antonio@gnu.org>
 
 	* Version 0.25-pre3 released.

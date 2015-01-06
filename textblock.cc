@@ -27,6 +27,7 @@
 #include "rectangle.h"
 #include "track.h"
 #include "ucs.h"
+#include "user_filter.h"
 #include "bitmap.h"
 #include "blob.h"
 #include "character.h"
@@ -94,7 +95,13 @@ void Textblock::apply_filters( const Control & control )
   if( textlines() <= 0 ) return;
   for( unsigned f = 0; f < control.filters.size(); ++f )
     {
-    const Filter::Type filter = control.filters[f];
+    if( control.filters[f].user_filterp )
+      {
+      for( int i = 0; i < textlines(); ++i )
+        tlpv[i]->apply_user_filter( *control.filters[f].user_filterp );
+      continue;
+      }
+    const Filter::Type filter = control.filters[f].type;
     if( filter != Filter::text_block )
       {
       for( int i = 0; i < textlines(); ++i )

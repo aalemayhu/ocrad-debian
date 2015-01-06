@@ -23,6 +23,7 @@ mkdir tmp
 cd "${objdir}"/tmp
 
 in="${testdir}"/test.pbm
+ouf="${testdir}"/test.ouf
 txt="${testdir}"/test.txt
 utxt="${testdir}"/test_utf8.txt
 fail=0
@@ -38,22 +39,55 @@ if [ $? = 1 ] ; then printf . ; else printf - ; fail=1 ; fi
 "${OCRAD}" -q -u 1,1,1,1 ${in} > /dev/null
 if [ $? = 1 ] ; then printf . ; else printf - ; fail=1 ; fi
 
-"${OCRAD}" -q ${in} > out || fail=1
+"${OCRAD}" ${in} > out || fail=1
+cmp ${txt} out || fail=1
+printf .
+"${OCRAD}" < ${in} > out || fail=1
+cmp ${txt} out || fail=1
+printf .
+"${OCRAD}" -F utf8 ${in} > out || fail=1
+cmp ${utxt} out || fail=1
+printf .
+"${OCRAD}" -F utf8 < ${in} > out || fail=1
+cmp ${utxt} out || fail=1
+printf .
+
+"${OCRAD}" -E ${ouf} ${in} > out || fail=1
+cmp ${txt} out || fail=1
+printf .
+"${OCRAD}" -E ${ouf} -F utf8 ${in} > out || fail=1
+cmp ${utxt} out || fail=1
+printf .
+
+"${OCRAD}" -u 0,0,1,1 ${in} > out
+cmp ${txt} out || fail=1
+printf .
+"${OCRAD}" -u 0,0,1,1 - < ${in} > out
 cmp ${txt} out || fail=1
 printf .
 
-"${OCRAD}" -q -u 0,0,1,1 ${in} > out
+"${OCRAD}" -u -1,-1,1,1 ${in} > out
+cmp ${txt} out || fail=1
+printf .
+"${OCRAD}" - -u -1,-1,1,1 < ${in} > out
 cmp ${txt} out || fail=1
 printf .
 
-"${OCRAD}" -q -u -1,-1,1,1 ${in} > out
-cmp ${txt} out || fail=1
+cat ${in} ${in} > in2 || framework_failure
+cat ${txt} ${txt} > txt2 || framework_failure
+cat ${utxt} ${utxt} > utxt2 || framework_failure
+"${OCRAD}" < in2 > out || fail=1
+cmp txt2 out || fail=1
 printf .
+"${OCRAD}" -F utf8 < in2 > out || fail=1
+cmp utxt2 out || fail=1
+printf .
+rm -f in2 txt2 utxt2
 
 test_chars()
 	{
 	for coord in ${coords} ; do
-		produced_chars="${produced_chars}`"${OCRAD}" -q -u${coord} ${in}`" || fail=1
+		produced_chars="${produced_chars}`"${OCRAD}" -u${coord} ${in}`" || fail=1
 	done
 
 	if [ "${produced_chars}" != "${expected_chars}" ] ; then
@@ -65,6 +99,7 @@ test_chars()
 	printf .
 	}
 
+# lines 1, 2, 3
 coords=' 71,109,17,26  92,109,17,26 114,109,15,26 132,109,17,26
         152,109,18,26 172,109,19,26 193,109,17,26 214,109,17,26
         234,108,17,27 253,109,18,26 274,109,17,26  68,153,29,27
@@ -79,6 +114,7 @@ expected_chars="0ol23456789ABcDEFGHIJKLMNÑopQRsTuvwxYz"
 produced_chars=
 test_chars
 
+# lines 4, 5
 coords=' 71,250,18,18  90,240,20,28 112,250,15,18 131,240,19,28
         152,250,17,18 170,241,16,27 183,249,20,27 204,240,23,28
         227,241,11,27 236,241,11,35 251,240,22,28 274,240,11,28
@@ -90,28 +126,49 @@ expected_chars="abcdefghijklmnñopqrstuvwxyz"
 produced_chars=
 test_chars
 
+# line 7
 coords=' 68,366,29,36  97,366,24,36 124,366,13,36 140,366,26,36
         168,366,30,36 208,366,29,36 237,366,24,36 265,366,13,36
         281,366,26,36 308,366,30,36 349,368,29,34 378,368,24,34
-        405,368,13,34 421,368,26,34 449,368,30,34  68,410,29,36
-         97,410,24,36 124,410,13,36 140,410,26,36 167,410,30,36
-         71,463,18,27  91,463,17,27 109,463,11,27 123,463,17,27
+        405,368,13,34 421,368,26,34 449,368,30,34'
+expected_chars="ÁÉÍóúÀÈÌòùÄËÏöü"
+produced_chars=
+test_chars
+
+# line 8
+coords=' 68,410,29,36  97,410,24,36 124,410,13,36 140,410,26,36
+        167,410,30,36 208,410,29,36 238,410,20,36 259,410,28,36
+        288,412,28,34 317,410,21,36 355,419,18,27 377,419,14,27
+        392,419,20,35 414,421,20,33 435,419,16,27'
+expected_chars="ÂÊÎôûÅ¨İ¾¸å¨ıÿ¸"
+produced_chars=
+test_chars
+
+# line 9
+coords=' 71,463,18,27  91,463,17,27 109,463,11,27 123,463,17,27
         142,463,22,27 177,463,18,27 198,463,17,27 216,463,11,27
         229,463,17,27 249,463,22,27 284,466,18,24 305,466,17,24
         323,466,12,24 336,466,17,24 356,466,22,24 391,463,18,27
         411,463,17,27 431,463,10,27 443,463,17,27 462,463,22,27'
-expected_chars="ÁÉÍóúÀÈÌòùÄËÏöüÂÊÎôûáéíóúàèìòùäëïöüâêîôû"
+expected_chars="áéíóúàèìòùäëïöüâêîôû"
 produced_chars=
 test_chars
 
-coords='137,516,19,19 174,508,15,15 192,508,11,27 245,509,19,26
-        268,505,17,35 322,508,27,27 353,508,10,31 367,508,9,31
-         70,558,15,29  86,552,14,27 104,552,9,31  128,552,15,27
-        158,552,9,31  173,552,17,15 195,552,8,31  215,552,3,27
-        228,552,9,31  252,560,19,19 275,560,19,19 347,561,15,26
-        364,552,23,35 391,552,25,27  72,612,18,6   94,613,19,11
-        114,602,19,22 134,597,12,15 150,597,11,15'
-expected_chars="+*/#$&()¿?[\\]^{|}<>çÇ@~¬±ªº"
+# line 10
+coords=' 71,508,5,27   97,509,19,26 120,505,17,35 174,508,27,27
+        216,508,10,31 230,508,9,31  244,508,15,15 264,516,19,19
+        333,508,11,27 367,516,19,19 413,516,19,19 438,508,14,27'
+expected_chars="!#$&()*+/<>?"
+produced_chars=
+test_chars
+
+# line 11
+coords=' 70,552,25,27  99,552,9,31  113,552,15,27 133,552,9,31
+        148,552,17,15 205,552,8,31  223,552,3,27  236,552,9,31
+        250,552,18,6  272,558,5,29  285,554,12,15 301,566,19,10
+        325,554,11,11 341,557,19,22 365,554,11,15 381,558,15,29
+        400,561,15,26 417,552,23,35'
+expected_chars="@[\\]^{|}~¡ª¬o±º¿çÇ"
 produced_chars=
 test_chars
 

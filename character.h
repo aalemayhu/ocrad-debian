@@ -86,4 +86,5 @@ public:
 
   void recognize1( const Charset & charset, const Rectangle & charbox );
   void apply_filter( const Filter::Type filter );
+  void apply_user_filter( const User_filter & user_filter );
   };

@@ -44,15 +44,9 @@ uint8_t pnm_getrawbyte( FILE * const f )
 
 uint8_t pnm_getc( FILE * const f )
   {
-  uint8_t ch;
-  bool comment = false;
-
-  do {
-    ch = pnm_getrawbyte( f );
-    if( ch == '#' ) comment = true;
-    else if( ch == '\n' ) comment = false;
-    }
-  while( comment );
+  uint8_t ch = pnm_getrawbyte( f );
+  if( ch == '#' )			// comment
+    { do ch = pnm_getrawbyte( f ); while( ch != '\n' ); }
   return ch;
   }
 

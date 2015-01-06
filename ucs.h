@@ -39,7 +39,6 @@ enum {
      POW1    = 0x00B9,	// superscript one
      MASCORD = 0x00BA,	// masculine ordinal indicator
      RDANGLE = 0x00BB,	// right-pointing double angle quotation mark
-     CYDIAER = 0x00BE,	// latin capital letter y with diaeresis
      IQUEST  = 0x00BF,	// inverted question mark
      CAGRAVE = 0x00C0,	// latin capital letter a with grave
      CAACUTE = 0x00C1,	// latin capital letter a with acute
@@ -100,10 +99,13 @@ enum {
      SGBREVE = 0x011F,	// latin small letter g with breve
      CIDOT   = 0x0130,	// latin capital letter i with dot above
      SINODOT = 0x0131,	// latin small letter i dotless
+     CLIGOE  = 0x0152,	// latin capital ligature oe
+     SLIGOE  = 0x0153,	// latin small ligature oe
      CSCEDI  = 0x015E,	// latin capital letter s with cedilla
      SSCEDI  = 0x015F,	// latin small letter s with cedilla
      CSCARON = 0x0160,	// latin capital letter s with caron
      SSCARON = 0x0161,	// latin small letter s with caron
+     CYDIAER = 0x0178,	// latin capital letter y with diaeresis
      CZCARON = 0x017D,	// latin capital letter z with caron
      SZCARON = 0x017E,	// latin small letter z with caron
      EURO    = 0x20AC 	// symbole euro
@@ -113,7 +115,8 @@ int base_letter( const int code );
 int compose( const int letter, const int accent );
 bool isalnum( const int code );
 bool isalpha( const int code );
-bool isdigit( const int code );
+inline bool isdigit( const int code )
+  { return ( code <= '9' && code >= '0' ); }
 bool ishigh( const int code );			// high chars like "A1bp|"
 bool islower( const int code );
 bool islower_ambiguous( const int code );
@@ -124,6 +127,7 @@ bool isupper( const int code );
 bool isupper_normal_width( const int code );
 bool isvowel( int code );
 unsigned char map_to_byte( const int code );
+int map_to_ucs( const unsigned char ch );	// ISO-8859-15 to UCS
 const char * ucs_to_utf8( const int code );
 int to_nearest_digit( const int code );
 int to_nearest_letter( const int code );

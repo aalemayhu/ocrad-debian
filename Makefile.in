@@ -9,7 +9,7 @@ SHELL = /bin/sh
 
 lib_objs = ocradlib.o
 ocr_objs = common.o segment.o mask.o rational.o rectangle.o track.o \
-           ucs.o page_image.o page_image_io.o \
+           iso_8859.o ucs.o user_filter.o page_image.o page_image_io.o \
            bitmap.o blob.o profile.o feats.o feats_test0.o feats_test1.o \
            character.o character_r11.o character_r12.o character_r13.o \
            textline.o textline_r2.o textblock.o textpage.o
@@ -45,27 +45,30 @@ main.o : main.cc
 $(lib_objs)     : Makefile ocradlib.h
 $(ocr_objs)     : Makefile bitmap.h blob.h common.h rectangle.h ucs.h
 $(objs)         : Makefile arg_parser.h
-character.o     : segment.h character.h profile.h feats.h
+character.o     : segment.h user_filter.h character.h profile.h feats.h
 character_r11.o : segment.h character.h profile.h feats.h
 character_r12.o : segment.h character.h profile.h feats.h
 character_r13.o : segment.h character.h profile.h feats.h
+common.o        : user_filter.h
 feats.o         : segment.h profile.h feats.h
 feats_test0.o   : segment.h profile.h feats.h
 feats_test1.o   : segment.h profile.h feats.h
-main.o          : common.h rational.h rectangle.h page_image.h textpage.h
+iso_8859.o      : iso_8859.h
+main.o          : common.h rational.h rectangle.h user_filter.h page_image.h textpage.h
 mask.o          : segment.h mask.h
+ocradcheck.o    : Makefile ocradlib.h
 ocradlib.o      : common.h rectangle.h ucs.h track.h bitmap.h blob.h character.h page_image.h textline.h textblock.h textpage.h
 page_image.o    : ocradlib.h rational.h segment.h mask.h track.h page_image.h
 page_image_io.o : rational.h page_image.h
 profile.o       : profile.h
 rational.o      : rational.h
 segment.o       : segment.h
-textblock.o     : rational.h track.h character.h page_image.h textline.h textblock.h
-textline.o      : histogram.h rational.h track.h character.h page_image.h textline.h
+textblock.o     : rational.h track.h user_filter.h character.h page_image.h textline.h textblock.h
+textline.o      : histogram.h rational.h track.h user_filter.h character.h page_image.h textline.h
 textline_r2.o   : track.h character.h textline.h
 textpage.o      : segment.h mask.h track.h character.h page_image.h textline.h textblock.h textpage.h
 track.o         : track.h
-ocradcheck.o    : Makefile ocradlib.h
+user_filter.o   : iso_8859.h user_filter.h
 
 
 doc : info man
@@ -148,6 +151,7 @@ dist : doc
 	  $(DISTNAME)/doc/$(pkgname).info \
 	  $(DISTNAME)/doc/$(pkgname).texi \
 	  $(DISTNAME)/testsuite/check.sh \
+	  $(DISTNAME)/testsuite/test.ouf \
 	  $(DISTNAME)/testsuite/test.pbm \
 	  $(DISTNAME)/testsuite/test.txt \
 	  $(DISTNAME)/testsuite/test_utf8.txt \

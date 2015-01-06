@@ -19,7 +19,7 @@
 extern "C" {
 #endif
 
-const char * const OCRAD_version_string = "0.25-pre3";
+const char * const OCRAD_version_string = "0.25-pre4";
 
 
 /* OCRAD_Pixmap.data is a pointer to image data formed by "height" rows

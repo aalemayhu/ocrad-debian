@@ -6,7 +6,7 @@
 # to copy, distribute and modify it.
 
 pkgname=ocrad
-pkgversion=0.25-pre3
+pkgversion=0.25-pre4
 progname=ocrad
 libname=ocrad
 srctrigger=doc/${pkgname}.texi

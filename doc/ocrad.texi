@@ -6,8 +6,8 @@
 @finalout
 @c %**end of header
 
-@set UPDATED 12 November 2014
-@set VERSION 0.25-pre3
+@set UPDATED 14 December 2014
+@set VERSION 0.25-pre4
 
 @dircategory GNU Packages
 @direntry
@@ -34,19 +34,11 @@
 
 This manual is for GNU Ocrad (version @value{VERSION}, @value{UPDATED}).
 
-@sp 1
-GNU Ocrad is an OCR (Optical Character Recognition) program and library
-based on a feature extraction method. It reads images in pbm (bitmap),
-pgm (greyscale) or ppm (color) formats and produces text in @w{byte
-(8-bit)} or UTF-8 formats. The pbm, pgm and ppm formats are collectively
-known as pnm.
-
-Ocrad includes a layout analyser able to separate the columns or blocks
-of text normally found on printed pages.
-
 @menu
+* Introduction::                Purpose and features of GNU Ocrad
 * Character sets::              Input charsets and output formats
 * Invoking ocrad::              Command line interface
+* Filters::                     Postprocessing the produced text
 * Library version::             Checking library version
 * Library functions::           Descriptions of the library functions
 * Library error codes::         Meaning of codes returned by functions
@@ -62,6 +54,24 @@ Copyright @copyright{} 2003-2014 Antonio Diaz Diaz.
 
 This manual is free documentation: you have unlimited permission
 to copy, distribute and modify it.
+
+
+@node Introduction
+@chapter Introduction
+@cindex introduction
+
+GNU Ocrad is an OCR (Optical Character Recognition) program and library
+based on a feature extraction method. It reads images in pbm (bitmap),
+pgm (greyscale) or ppm (color) formats and produces text in @w{byte
+(8-bit)} or UTF-8 formats. The pbm, pgm and ppm formats are collectively
+known as pnm.
+
+Ocrad includes a layout analyser able to separate the columns or blocks
+of text normally found on printed pages.
+
+For best results the characters should be at least 20 pixels high. If
+they are smaller, try the @samp{--scale} option. Scanning the image at
+300 dpi usually produces a character size good enough for ocrad.
 
 
 @node Character sets
@@ -129,36 +139,24 @@ processing a page with characters from different character sets.@*
 If no charset is specified, @w{@samp{iso-8859-15}} (latin9) is assumed.@*
 Try @w{@samp{--charset=help}} for a list of valid charset names.
 
+@anchor{--filter}
 @item -e @var{name}
 @itemx --filter=@var{name}
-Pass the output text through the given postprocessing filter. Several
-filters can be applied in sequence using more than one @samp{--filter}
-option. The filters are applied in the order they appear on the command
-line.
-
-@w{@samp{--filter=letters}} forces every character that resembles a
-letter to be recognized as a letter. Other characters will be output
-without change.@*
-@w{@samp{--filter=letters_only}}, same as @w{@samp{--filter=letters}},
-but other characters will be discarded.@*
-@w{@samp{--filter=numbers}} forces every character that resembles a
-number to be recognized as a number. Other characters will be output
-without change.@*
-@w{@samp{--filter=numbers_only}}, same as @w{@samp{--filter=numbers}}
-but other characters will be discarded.@*
-@w{@samp{--filter=same_height}} discards any character (or noise) whose
-height differs in more than 10 percent from the median height of the
-characters in the line.@*
-@w{@samp{--filter=text_block}} discards any character (or noise) outside
-of a rectangular block of text lines.@*
-@w{@samp{--filter=upper_num}} forces every character that resembles a
-uppercase letter or a number to be recognized as such. Other characters
-will be output without change.@*
-@w{@samp{--filter=upper_num_mark}}, same as @w{@samp{--filter=upper_num}},
-but other characters will be marked as unrecognized.@*
-@w{@samp{--filter=upper_num_only}}, same as @w{@samp{--filter=upper_num}},
-but other characters will be discarded.@*
+Pass the output text through the given built-in postprocessing filter
+(@pxref{Filters}). Several filters can be applied in sequence using as
+many @samp{--filter} and @samp{--user-filter} options as needed. The
+filters are applied in the order they appear on the command line.@*
 Try @w{@samp{--filter=help}} for a list of valid filter names.
+
+@anchor{--user-filter}
+@item -E @var{file}
+@itemx --user-filter=@var{file}
+Pass the output text through the postprocessing filter defined in
+@var{file}. See the chapter @samp{Filters} (@pxref{Filters}) for a
+description of the format of @var{file}. Several filters can be applied
+in sequence using as many @samp{--filter} and @samp{--user-filter}
+options as needed. The filters are applied in the order they appear on
+the command line.
 
 @item -f
 @itemx --force
@@ -195,7 +193,8 @@ by @var{-value}.
 @item -t @var{name}
 @itemx --transform=@var{name}
 Perform given transformation (rotation or mirroring) on the input image
-before scaling, layout analysis and recognition.@*
+before scaling, layout analysis and recognition. Rotations are made
+counter-clockwise.@*
 Try @w{@samp{--transform=help}} for a list of valid transformation names.
 
 @item -T @var{value}
@@ -236,6 +235,121 @@ Exit status: 0 for a normal exit, 1 for environmental problems (file not
 found, invalid flags, I/O errors, etc), 2 to indicate a corrupt or
 invalid input file, 3 for an internal consistency error (eg, bug) which
 caused ocrad to panic.
+
+
+@node Filters
+@chapter Postprocessing the produced text
+@cindex filters
+
+Filters replace some characters in the text output with different
+characters and remove some other characters from the output. For
+example, when recognizing a text that is known to contain just numbers,
+any character recognized as a @samp{Z} will probably be a @samp{2}.
+
+Filters don't enable the recognition of characters, just filter them
+from the output. Use @samp{--charset} to enable the recognition of a
+character set different from the default ISO-8859-15.
+
+Ocrad provides both built-in filters and user-defined filters.
+
+@section User-defined filters
+
+The format of a user-defined filter file (@pxref{--user-filter}) is very
+simple. Each line contains a comma-separated list of quoted characters
+('c'), character sets ([0-9A-Z]), character codes (U0063), or character
+ranges (U0000 - UFFFF), and an optional conversion (an equal sign (=)
+followed by a quoted character or a character code). The characters in
+the list are converted to the character in the conversion. If no
+conversion is specified, the character is left unmodified (converted to
+itself).
+
+Any character not appearing in the file, either by itself or included in
+a set or range, will be discarded. The destination character of a
+conversion is considered as listed by default. Every character may be
+listed more than once, even as part of different conversions. The last
+conversion affecting a given character is the one that is performed.
+
+Character sets and quoted characters may contain escape sequences.
+
+The character @samp{#} at begin of line or after whitespace starts a
+comment that extends to the end of the line.
+
+Ranges of characters may be specified in character sets by writing the
+starting and ending characters with a @samp{-} between them. Thus,
+@samp{[A-Z]} matches any ASCII uppercase letter. @samp{-} may be
+specified by placing it first or last. @samp{]} may be specified by
+placing it first. If the first character after the left bracket is
+@samp{^}, it indicates a "complemented set", which matches any character
+except the ones between the brackets.
+
+Literals (quoted characters and character sets) are decoded as
+ISO-8859-15. Character codes are decoded as UCS2. Thus, a @samp{latin
+capital letter y with diaeresis} is specified in a set as @samp{[\xBE]},
+but its code is @samp{U0178}.
+
+Spaces and control characters are unaffected by filters, except that
+leadind, trailing, and duplicate spaces produced by the removal of other
+characters will be themselves removed.
+
+@noindent
+Here is an example user-defined filter file equivalent to the built-in
+filter @samp{numbers}:
+
+@example
+U0000 - U00FF              # remove this line to get @samp{numbers_only}
+'D', 'O', 'Q', 'o' = '0'
+'I', 'L', 'l', '|' = '1'
+'Z', 'z'           = '2'
+                     '3'
+'A', 'q'           = '4'
+'S', 's'           = '5'
+'G', 'b', U00F3    = '6'   # latin small letter o with acute
+'J', 'T'           = '7'
+'&', 'B'           = '8'
+'g'                = '9'
+@end example
+
+
+@section Built-in filters
+
+Ocrad provides the following built-in filters (@pxref{--filter}):
+
+@table @samp
+@item --filter=letters
+Forces every character that resembles a letter to be recognized as a
+letter. Other characters will be output without change.
+
+@item --filter=letters_only
+Same as @samp{--filter=letters}, but other characters will be discarded.
+
+@item --filter=numbers
+Forces every character that resembles a number to be recognized as a
+number. Other characters will be output without change.
+
+@item --filter=numbers_only
+Same as @samp{--filter=numbers} but other characters will be discarded.
+
+@item --filter=same_height
+Discards any character (or noise) whose height differs in more than 10
+percent from the median height of the characters in the line.
+
+@item --filter=text_block
+Discards any character (or noise) outside of a rectangular block of text
+lines.
+
+@item --filter=upper_num
+Forces every character that resembles a uppercase letter or a number to
+be recognized as such. Other characters will be output without change.
+
+@item --filter=upper_num_mark
+Same as @samp{--filter=upper_num}, but other characters will be marked
+as unrecognized.
+
+@item --filter=upper_num_only
+Same as @samp{--filter=upper_num}, but other characters will be
+discarded.
+
+@end table
 
 
 @node Library version
@@ -500,10 +614,6 @@ As there is no such thing as a free lunch, this approach has some
 drawbacks. It makes ocrad very sensitive to character defects, and makes
 difficult to modify ocrad to recognize new characters.
 
-For best results, the characters should be at least 20 pixels high. If
-they are smaller, try the --scale option. Scanning the image at 300 dpi
-usually produces a character size good enough for ocrad.
-
 
 @node OCR results file
 @chapter OCR results file
@@ -568,8 +678,8 @@ confidence value @var{v}, without space between them. The higher the
 value of confidence, the more confident is the result.
 @end itemize
 
-Running @code{./ocrad -x test.orf examples/test.pbm} in the source directory
-will give you an example ORF file.
+Running @code{./ocrad -x test.orf testsuite/test.pbm} in the source
+directory will give you an example ORF file.
 
 
 @node Problems
@@ -584,7 +694,7 @@ for all eternity, if not longer.
 
 If you find a bug in GNU Ocrad, please send electronic mail to
 @email{bug-ocrad@@gnu.org}. Include the version number, which you can
-find by running @w{@samp{ocrad --version}}.
+find by running @w{@code{ocrad --version}}.
 
 
 @node Concept index
