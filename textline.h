@@ -64,5 +64,6 @@ public:
   void recognize1( const Charset & charset ) const;
   void recognize2( const Charset & charset );
   void apply_filter( const Filter::Type filter );
+  void apply_user_filter( const User_filter & user_filter );
   void remove_leadind_trailing_duplicate_spaces();
   };

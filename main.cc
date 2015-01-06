@@ -39,6 +39,7 @@
 #include "common.h"
 #include "rational.h"
 #include "rectangle.h"
+#include "user_filter.h"
 #include "page_image.h"
 #include "textpage.h"
 
@@ -132,23 +133,24 @@ void show_help()
                "recognized correctly. Try to avoid them.\n"
                "\nUsage: %s [options] [files]\n", invocation_name );
   std::printf( "\nOptions:\n"
-               "  -h, --help               display this help and exit\n"
-               "  -V, --version            output version information and exit\n"
-               "  -a, --append             append text to output file\n"
-               "  -c, --charset=<name>     try '--charset=help' for a list of names\n"
-               "  -e, --filter=<name>      try '--filter=help' for a list of names\n"
-               "  -f, --force              force overwrite of output file\n"
-               "  -F, --format=<fmt>       output format (byte, utf8)\n"
-               "  -i, --invert             invert image levels (white on black)\n"
-               "  -l, --layout             perform layout analysis\n"
-               "  -o, --output=<file>      place the output into <file>\n"
-               "  -q, --quiet              suppress all messages\n"
-               "  -s, --scale=[-]<n>       scale input image by [1/]<n>\n"
-               "  -t, --transform=<name>   try '--transform=help' for a list of names\n"
-               "  -T, --threshold=<n%%>     threshold for binarization (0-100%%)\n"
-               "  -u, --cut=<l,t,w,h>      cut input image by given rectangle\n"
-               "  -v, --verbose            be verbose\n"
-               "  -x, --export=<file>      export results in ORF format to <file>\n" );
+               "  -h, --help                display this help and exit\n"
+               "  -V, --version             output version information and exit\n"
+               "  -a, --append              append text to output file\n"
+               "  -c, --charset=<name>      try '--charset=help' for a list of names\n"
+               "  -e, --filter=<name>       try '--filter=help' for a list of names\n"
+               "  -E, --user-filter=<file>  user-defined filter, see manual for format\n"
+               "  -f, --force               force overwrite of output file\n"
+               "  -F, --format=<fmt>        output format (byte, utf8)\n"
+               "  -i, --invert              invert image levels (white on black)\n"
+               "  -l, --layout              perform layout analysis\n"
+               "  -o, --output=<file>       place the output into <file>\n"
+               "  -q, --quiet               suppress all messages\n"
+               "  -s, --scale=[-]<n>        scale input image by [1/]<n>\n"
+               "  -t, --transform=<name>    try '--transform=help' for a list of names\n"
+               "  -T, --threshold=<n%%>      threshold for binarization (0-100%%)\n"
+               "  -u, --cut=<l,t,w,h>       cut input image by given rectangle\n"
+               "  -v, --verbose             be verbose\n"
+               "  -x, --export=<file>       export results in ORF format to <file>\n" );
   if( verbosity >= 1 )
     {
     std::printf( "  -1..6                    pnm output file type (debug)\n"
@@ -260,37 +262,39 @@ int main( const int argc, const char * const argv[] )
 
   const Arg_parser::Option options[] =
     {
-    { '1', 0,           Arg_parser::no  },
-    { '2', 0,           Arg_parser::no  },
-    { '3', 0,           Arg_parser::no  },
-    { '4', 0,           Arg_parser::no  },
-    { '5', 0,           Arg_parser::no  },
-    { '6', 0,           Arg_parser::no  },
-    { 'a', "append",    Arg_parser::no  },
-    { 'c', "charset",   Arg_parser::yes },
-    { 'C', "copy",      Arg_parser::no  },
-    { 'D', "debug",     Arg_parser::yes },
-    { 'e', "filter",    Arg_parser::yes },
-    { 'f', "force",     Arg_parser::no  },
-    { 'F', "format",    Arg_parser::yes },
-    { 'h', "help",      Arg_parser::no  },
-    { 'i', "invert",    Arg_parser::no  },
-    { 'l', "layout",    Arg_parser::no  },
-    { 'o', "output",    Arg_parser::yes },
-    { 'q', "quiet",     Arg_parser::no  },
-    { 's', "scale",     Arg_parser::yes },
-    { 't', "transform", Arg_parser::yes },
-    { 'T', "threshold", Arg_parser::yes },
-    { 'u', "cut",       Arg_parser::yes },
-    { 'v', "verbose",   Arg_parser::no  },
-    { 'V', "version",   Arg_parser::no  },
-    { 'x', "export",    Arg_parser::yes },
-    {  0 , 0,           Arg_parser::no  } };
+    { '1', 0,             Arg_parser::no  },
+    { '2', 0,             Arg_parser::no  },
+    { '3', 0,             Arg_parser::no  },
+    { '4', 0,             Arg_parser::no  },
+    { '5', 0,             Arg_parser::no  },
+    { '6', 0,             Arg_parser::no  },
+    { 'a', "append",      Arg_parser::no  },
+    { 'c', "charset",     Arg_parser::yes },
+    { 'C', "copy",        Arg_parser::no  },
+    { 'D', "debug",       Arg_parser::yes },
+    { 'e', "filter",      Arg_parser::yes },
+    { 'E', "user-filter", Arg_parser::yes },
+    { 'f', "force",       Arg_parser::no  },
+    { 'F', "format",      Arg_parser::yes },
+    { 'h', "help",        Arg_parser::no  },
+    { 'i', "invert",      Arg_parser::no  },
+    { 'l', "layout",      Arg_parser::no  },
+    { 'o', "output",      Arg_parser::yes },
+    { 'q', "quiet",       Arg_parser::no  },
+    { 's', "scale",       Arg_parser::yes },
+    { 't', "transform",   Arg_parser::yes },
+    { 'T', "threshold",   Arg_parser::yes },
+    { 'u', "cut",         Arg_parser::yes },
+    { 'v', "verbose",     Arg_parser::no  },
+    { 'V', "version",     Arg_parser::no  },
+    { 'x', "export",      Arg_parser::yes },
+    {  0 , 0,             Arg_parser::no  } };
 
   const Arg_parser parser( argc, argv, options );
   if( parser.error().size() )				// bad option
     { show_error( parser.error().c_str(), 0, true ); return 1; }
 
+  int retval = 0;
   int argind = 0;
   for( ; argind < parser.arguments(); ++argind )
     {
@@ -312,6 +316,9 @@ int main( const int argc, const char * const argv[] )
       case 'C': input_control.copy = true; break;
       case 'D': control.debug_level = std::strtol( arg, 0, 0 ); break;
       case 'e': if( !control.add_filter( program_name, arg ) ) return 1;
+                break;
+      case 'E': retval = control.add_user_filter( program_name, arg );
+                if( retval != 0 ) return retval;
                 break;
       case 'f': force = true; break;
       case 'F': if( !control.set_format( arg ) )
@@ -354,7 +361,7 @@ int main( const int argc, const char * const argv[] )
     if( !control.outfile )
       {
       if( verbosity >= 0 )
-        std::fprintf( stderr, "Cannot open %s\n", outfile_name );
+        std::fprintf( stderr, "Can't open %s\n", outfile_name );
       return 1;
       }
     }
@@ -369,7 +376,7 @@ int main( const int argc, const char * const argv[] )
       if( !control.exportfile )
         {
         if( verbosity >= 0 )
-          std::fprintf( stderr, "Cannot open %s\n", exportfile_name );
+          std::fprintf( stderr, "Can't open %s\n", exportfile_name );
         return 1;
         }
       }
@@ -381,7 +388,6 @@ int main( const int argc, const char * const argv[] )
   // process any remaining command line arguments (input files)
   FILE * infile = (argind < parser.arguments()) ? 0 : stdin;
   const char *infile_name = "-";
-  int retval = 0;
   while( true )
     {
     while( infile != stdin )
@@ -393,18 +399,18 @@ int main( const int argc, const char * const argv[] )
       else infile = std::fopen( infile_name, "rb" );
       if( infile ) break;
       if( verbosity >= 0 )
-        std::fprintf( stderr, "Cannot open %s\n", infile_name );
+        std::fprintf( stderr, "Can't open %s\n", infile_name );
       if( retval == 0 ) retval = 1;
       }
     if( !infile ) break;
 
-    int tmp = process_file( infile, infile_name, input_control, control );
+    const int tmp = process_file( infile, infile_name, input_control, control );
     if( infile == stdin )
       {
-      if( tmp <= 1 )
+      if( tmp <= 1 )		// detect EOF
         {
         int ch;
-        do ch = std::fgetc( infile ); while( std::isspace( ch ) );
+        do ch = std::fgetc( infile ); while( ch == 0 || std::isspace( ch ) );
         std::ungetc( ch, infile );
         }
       if( tmp > 1 || std::feof( infile ) || std::ferror( infile ) ) infile = 0;

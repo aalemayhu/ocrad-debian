@@ -47,12 +47,15 @@ int UCS::base_letter( const int code )
     case COCIRCU:
     case COTILDE:
     case CODIAER: return 'O';
-    case CSCEDI : return 'S';
+    case CSCEDI :
+    case CSCARON: return 'S';
     case CUGRAVE:
     case CUACUTE:
     case CUCIRCU:
     case CUDIAER: return 'U';
-    case CYACUTE: return 'Y';
+    case CYACUTE:
+    case CYDIAER: return 'Y';
+    case CZCARON: return 'Z';
     case SAGRAVE:
     case SAACUTE:
     case SACIRCU:
@@ -76,13 +79,15 @@ int UCS::base_letter( const int code )
     case SOCIRCU:
     case SOTILDE:
     case SODIAER: return 'o';
-    case SSCEDI : return 's';
+    case SSCEDI :
+    case SSCARON: return 's';
     case SUGRAVE:
     case SUACUTE:
     case SUCIRCU:
     case SUDIAER: return 'u';
     case SYACUTE:
     case SYDIAER: return 'y';
+    case SZCARON: return 'z';
     default:      return 0;
     }
   }
@@ -117,6 +122,8 @@ int UCS::compose( const int letter, const int accent )
               if( accent == '`' ) return CUGRAVE;
               if( accent == '^' ) return CUCIRCU;
               if( accent == ':' ) return CUDIAER; break;
+    case 'Y': if( accent == '\'') return CYACUTE;
+              if( accent == ':' ) return CYDIAER; break;
     case 'Z': return CZCARON;
     case 'a': if( accent == '\'') return SAACUTE;
               if( accent == '`' ) return SAGRAVE;
@@ -163,12 +170,6 @@ bool UCS::isalnum( const int code )
 bool UCS::isalpha( const int code )
   {
   return ( ( code < 128 && std::isalpha( code ) ) || base_letter( code ) );
-  }
-
-
-bool UCS::isdigit( const int code )
-  {
-  return ( code <= '9' && code >= '0' );
   }
 
 
@@ -236,7 +237,7 @@ bool UCS::islower_small_ambiguous( const int code )
 
 bool UCS::isspace( const int code )
   {
-  return ( code < 128 && std::isspace( code ) );
+  return ( code < 128 && std::isspace( code ) ) || code == 0xA0;
   }
 
 
@@ -283,11 +284,29 @@ unsigned char UCS::map_to_byte( const int code )
     case SSCEDI : return 0xFE;
     case CSCARON: return 0xA6;
     case SSCARON: return 0xA8;
+    case CYDIAER: return 0xBE;
     case CZCARON: return 0xB4;
     case SZCARON: return 0xB8;
     case EURO   : return 0xA4;
     default     : return 0;
     }
+  }
+
+
+int UCS::map_to_ucs( const unsigned char ch )
+  {
+  switch( ch )
+    {
+    case 0xA4: return EURO;
+    case 0xA6: return CSCARON;
+    case 0xA8: return SSCARON;
+    case 0xB4: return CZCARON;
+    case 0xB8: return SZCARON;
+    case 0xBC: return CLIGOE;
+    case 0xBD: return SLIGOE;
+    case 0xBE: return CYDIAER;
+    }
+  return ch;
   }
 
 
@@ -307,7 +326,7 @@ const char * UCS::ucs_to_utf8( const int code )
 
   s[i] = 0; --i;
   int d = 0;
-  for( ; i > 0; --i, d+=6 )
+  for( ; i > 0; --i, d += 6 )
     s[i] = 0x80 | ( ( code >> d ) & 0x3F );		// 10XX XXXX
   s[0] = mask | ( code >> d );
   return s;
@@ -318,13 +337,14 @@ int UCS::to_nearest_digit( const int code )
   {
   switch( code )
     {
+    case 'D':
     case 'O':
     case 'Q':
     case 'o':     return '0';
-    case '|':
     case 'I':
     case 'L':
     case 'l':
+    case '|':
     case SINODOT: return '1';
     case 'Z':
     case 'z':     return '2';
@@ -417,11 +437,14 @@ int UCS::toupper( const int code )
     case SOTILDE: return COTILDE;
     case SODIAER: return CODIAER;
     case SSCEDI : return CSCEDI;
+    case SSCARON: return CSCARON;
     case SUGRAVE: return CUGRAVE;
     case SUACUTE: return CUACUTE;
     case SUCIRCU: return CUCIRCU;
     case SUDIAER: return CUDIAER;
     case SYACUTE: return CYACUTE;
+    case SYDIAER: return CYDIAER;
+    case SZCARON: return CZCARON;
     default:      return code;
     }
   }

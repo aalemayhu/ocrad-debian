@@ -381,6 +381,7 @@ void Textline::recognize2( const Charset & charset )
     }
 
   // transform small o or u with accent or diaeresis to capital
+  // transform small s or z with caron to capital
   {
   int begin = big_initials();
   bool isolated = false;	// isolated letters compare with all line
@@ -399,7 +400,8 @@ void Textline::recognize2( const Charset & charset )
       int code = c1.guess( 0 ).code;
       if( code < 128 || c1.blobs() < 2 ) continue;
       int codeb = UCS::base_letter( code );
-      if( codeb != 'o' && codeb != 'u' ) continue;
+      if( codeb != 'o' && codeb != 'u' && codeb != 's' && codeb != 'z' )
+        continue;
       const Blob & b1 = c1.blob( c1.blobs() - 1 );	// lower blob
       for( int j = begin; j < characters(); ++j ) if( j != i )
         {

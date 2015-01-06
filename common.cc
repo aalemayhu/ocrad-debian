@@ -19,9 +19,11 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <string>
 #include <vector>
 
 #include "common.h"
+#include "user_filter.h"
 
 
 namespace {
@@ -51,7 +53,7 @@ const F_entry F_table[] =
   { "upper_num",      Filter::upper_num },
   { "upper_num_mark", Filter::upper_num_mark },
   { "upper_num_only", Filter::upper_num_only },
-  { 0, (Filter::Type)0 }
+  { 0, Filter::user }				// not a valid name
   };
 
 struct T_entry
@@ -157,12 +159,20 @@ void Transformation::show_error( const char * const program_name,
   }
 
 
+Control::~Control()
+  {
+  for( unsigned f = filters.size(); f > 0; --f )
+    if( filters[f-1].user_filterp )
+      delete filters[f-1].user_filterp;
+  }
+
+
 bool Control::add_filter( const char * const program_name,
                           const char * const name )
   {
   for( int i = 0; F_table[i].name != 0; ++i )
     if( std::strcmp( name, F_table[i].name ) == 0 )
-      { filters.push_back( F_table[i].type ); return true; }
+      { filters.push_back( Filter( F_table[i].type ) ); return true; }
   if( verbosity >= 0 )
     {
     if( name && std::strcmp( name, "help" ) != 0 )
@@ -173,6 +183,24 @@ bool Control::add_filter( const char * const program_name,
     std::fputs( "\n", stderr );
     }
   return false;
+  }
+
+
+int Control::add_user_filter( const char * const program_name,
+                              const char * const file_name )
+  {
+  const User_filter * const user_filterp = new User_filter( file_name );
+  const int retval = user_filterp->retval();
+  if( retval == 0 )
+    filters.push_back( Filter( user_filterp ) );
+  else
+    {
+    if( verbosity >= 0 )
+      std::fprintf( stderr,"%s: user filter: %s\n",
+                    program_name, user_filterp->error().c_str() );
+    delete user_filterp;
+    }
+  return retval;
   }
 
 

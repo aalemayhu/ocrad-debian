@@ -3,7 +3,15 @@ Changes in version 0.25:
 Character recognition has been improved. ('2' vs 'Z', '4' vs 'Q',
 '5' vs 'S', 'E', 'J', merged 'VV').
 
-The new filters "text_block" and "upper_num_mark" have been added.
+Uppercase 'Y' with acute and 'Y' with diaeresis are now recognized.
+
+Uppercase 'S' and 'Z' with caron are no more misrecognized as lowercase.
+
+The new option "-E, --user-filter", which allows the use of user-defined
+filters, has been added.
+
+The new built-in filters "text_block" and "upper_num_mark" have been
+added.
 
 The output of "--help" has been extended.
 

@@ -169,7 +169,7 @@ bool Bitmap::adjust_width()
   }
 
 
-// Return the total filled area of this Bitmap
+// Returns the total filled area of this Bitmap
 //
 int Bitmap::area() const
   {
@@ -183,7 +183,7 @@ int Bitmap::area() const
   }
 
 
-// Return the central octagon filled area of this Bitmap
+// Returns the central octagon filled area of this Bitmap
 //
 int Bitmap::area_octagon() const
   {
@@ -208,7 +208,7 @@ int Bitmap::area_octagon() const
   }
 
 
-// Return the size of the central octagon of this blob
+// Returns the size of the central octagon of this blob
 //
 int Bitmap::size_octagon() const
   {

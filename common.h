@@ -60,16 +60,27 @@ public:
   };
 
 
-namespace Filter {
-enum Type { letters, letters_only, numbers, numbers_only, same_height,
-            text_block, upper_num, upper_num_mark, upper_num_only };
-} // end namespace Filter
+class User_filter;
+
+struct Filter
+  {
+  enum Type { letters, letters_only, numbers, numbers_only, same_height,
+              text_block, upper_num, upper_num_mark, upper_num_only, user };
+
+  const User_filter * user_filterp;
+  Type type;
+
+  explicit Filter( const User_filter * p )
+    : user_filterp( p ), type( user ) {}
+  explicit Filter( const Type t )
+    : user_filterp( 0 ), type( t ) {}
+  };
 
 
 struct Control
   {
   Charset charset;
-  std::vector< Filter::Type > filters;
+  std::vector< Filter > filters;
   FILE * outfile, * exportfile;
   int debug_level;
   char filetype;
@@ -78,7 +89,10 @@ struct Control
   Control()
     : outfile( stdout ), exportfile( 0 ),
       debug_level( 0 ), filetype( '4' ), utf8( false ) {}
+  ~Control();
 
   bool add_filter( const char * const program_name, const char * const name );
+  int add_user_filter( const char * const program_name,
+                       const char * const file_name );
   bool set_format( const char * const name );
   };

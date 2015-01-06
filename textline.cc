@@ -29,6 +29,7 @@
 #include "rectangle.h"
 #include "track.h"
 #include "ucs.h"
+#include "user_filter.h"
 #include "bitmap.h"
 #include "blob.h"
 #include "character.h"
@@ -38,7 +39,7 @@
 
 namespace {
 
-// Return the character position >= first preceding a big gap or eol.
+// Returns the character position >= first preceding a big gap or eol.
 //
 int find_big_gap( const Textline & line, const int first,
                   const int space_width_limit )
@@ -386,6 +387,20 @@ void Textline::apply_filter( const Filter::Type filter )
               character(i).h_overlaps( character( i - 1 ) ) )
           { delete_character( i ); modified = true; }
       }
+    }
+  if( modified ) remove_leadind_trailing_duplicate_spaces();
+  }
+
+
+void Textline::apply_user_filter( const User_filter & user_filter )
+  {
+  bool modified = false;
+  for( int i = characters() - 1; i >= 0; --i )
+    {
+    Character & c = character( i );
+    if( !c.guesses() ) continue;
+    c.apply_user_filter( user_filter );
+    if( !c.guesses() ) { delete_character( i ); modified = true; }
     }
   if( modified ) remove_leadind_trailing_duplicate_spaces();
   }

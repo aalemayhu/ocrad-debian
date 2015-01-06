@@ -17,6 +17,7 @@
 
 #include <algorithm>
 #include <cstdio>
+#include <string>
 #include <vector>
 #include <stdint.h>
 
@@ -24,6 +25,7 @@
 #include "rectangle.h"
 #include "segment.h"
 #include "ucs.h"
+#include "user_filter.h"
 #include "bitmap.h"
 #include "blob.h"
 #include "character.h"
@@ -60,7 +62,7 @@ Character::~Character()
   }
 
 
-// Return the filled area of the main blobs only (no recursive)
+// Returns the filled area of the main blobs only (no recursive)
 //
 int Character::area() const
   {
@@ -397,5 +399,25 @@ void Character::apply_filter( const Filter::Type filter )
           clear_guesses();
         }
       break;
+    case Filter::user: break;		// handled by apply_user_filter
+    }
+  }
+
+
+void Character::apply_user_filter( const User_filter & user_filter )
+  {
+  if( !guesses() || UCS::isspace( gv[0].code ) ) return;
+  int new_code = user_filter.get_new_code( gv[0].code );
+
+  if( new_code >= 0 ) gv[0].code = new_code;
+  else							// disabled
+    {
+    for( int i = 1; i < guesses(); ++i )
+      {
+      new_code = user_filter.get_new_code( gv[i].code );
+      if( new_code >= 0 )
+        { swap_guesses( 0, i ); gv[0].code = new_code; break; }
+      }
+    if( new_code < 0 ) clear_guesses();
     }
   }
