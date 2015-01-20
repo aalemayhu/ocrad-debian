@@ -2,7 +2,7 @@ ocrad (0.25~pre4-1) experimental; urgency=low
 
   * New upstream release (Closes: #602478).
 
- -- Alexander Alemayhu <alexander@bitraf.no>  Tue, 25 Nov 2014 04:15:14 +0100
+ -- Alexander Alemayhu <alexander@bitraf.no>  Tue, 20 Jan 2015 19:55:41 +0100
 
 ocrad (0.24-1) unstable; urgency=medium
 
