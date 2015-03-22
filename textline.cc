@@ -1,5 +1,5 @@
 /*  GNU Ocrad - Optical Character Recognition program
-    Copyright (C) 2003-2014 Antonio Diaz Diaz.
+    Copyright (C) 2003-2015 Antonio Diaz Diaz.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -381,12 +381,7 @@ void Textline::apply_filter( const Filter::Type filter )
         { delete_character( i ); modified = true; }
       }
     if( filter == Filter::upper_num_mark )
-      {
-      for( int i = characters() - 1; i > 0; --i )
-        if( !character(i).guesses() &&
-              character(i).h_overlaps( character( i - 1 ) ) )
-          { delete_character( i ); modified = true; }
-      }
+      join_broken_unrecognized_characters();
     }
   if( modified ) remove_leadind_trailing_duplicate_spaces();
   }
@@ -400,9 +395,20 @@ void Textline::apply_user_filter( const User_filter & user_filter )
     Character & c = character( i );
     if( !c.guesses() ) continue;
     c.apply_user_filter( user_filter );
-    if( !c.guesses() ) { delete_character( i ); modified = true; }
+    if( !c.guesses() && user_filter.discard() )
+      { delete_character( i ); modified = true; }
     }
+  if( user_filter.mark() ) join_broken_unrecognized_characters();
   if( modified ) remove_leadind_trailing_duplicate_spaces();
+  }
+
+
+void Textline::join_broken_unrecognized_characters()
+  {
+  for( int i = characters() - 1; i > 0; --i )
+    if( !character(i).guesses() &&
+        character(i).h_overlaps( character( i - 1 ) ) )
+      delete_character( i );
   }
 
 

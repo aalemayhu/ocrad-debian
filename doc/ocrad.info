@@ -11,7 +11,7 @@ File: ocrad.info,  Node: Top,  Next: Introduction,  Up: (dir)
 GNU Ocrad Manual
 ****************
 
-This manual is for GNU Ocrad (version 0.25-pre4, 14 December 2014).
+This manual is for GNU Ocrad (version 0.25-pre6, 19 January 2015).
 
 * Menu:
 
@@ -29,7 +29,7 @@ This manual is for GNU Ocrad (version 0.25-pre4, 14 December 2014).
 * Concept index::               Index of concepts
 
 
-   Copyright (C) 2003-2014 Antonio Diaz Diaz.
+   Copyright (C) 2003-2015 Antonio Diaz Diaz.
 
    This manual is free documentation: you have unlimited permission to
 copy, distribute and modify it.
@@ -232,7 +232,10 @@ character set different from the default ISO-8859-15.
 ========================
 
 The format of a user-defined filter file (*note --user-filter::) is very
-simple. Each line contains a comma-separated list of quoted characters
+simple. Each line contains either a character conversion or a word that
+specifies the default behaviour for unlisted characters.
+
+   A character conversion is a comma-separated list of quoted characters
 ('c'), character sets ([0-9A-Z]), character codes (U0063), or character
 ranges (U0000 - UFFFF), and an optional conversion (an equal sign (=)
 followed by a quoted character or a character code). The characters in
@@ -240,12 +243,16 @@ the list are converted to the character in the conversion. If no
 conversion is specified, the character is left unmodified (converted to
 itself).
 
-   Any character not appearing in the file, either by itself or
-included in a set or range, will be discarded. The destination
-character of a conversion is considered as listed by default. Every
-character may be listed more than once, even as part of different
-conversions. The last conversion affecting a given character is the one
-that is performed.
+   The default behaviour is to discard unlisted characters, i.e. those
+characters not appearing in the file, either by themselves or included
+in a set or range. If a line containing just the word 'leave' is found
+in the file, unlisted characters are left unmodified. If the word is
+'mark', unlisted characters are marked as unrecognized.
+
+   The destination character of a conversion is considered as listed by
+default. Every character may be listed more than once, even as part of
+different conversions. The last conversion affecting a given character
+is the one that is performed.
 
    Character sets and quoted characters may contain escape sequences.
 
@@ -272,7 +279,7 @@ characters will be themselves removed.
 Here is an example user-defined filter file equivalent to the built-in
 filter 'numbers':
 
-     U0000 - U00FF              # remove this line to get 'numbers_only'
+     leave                      # remove this line to get 'numbers_only'
      'D', 'O', 'Q', 'o' = '0'
      'I', 'L', 'l', '|' = '1'
      'Z', 'z'           = '2'
@@ -672,20 +679,20 @@ Concept index
 
 Tag Table:
 Node: Top196
-Node: Introduction1264
-Node: Character sets1998
-Node: Invoking ocrad3152
-Ref: --filter4098
-Ref: --user-filter4475
-Node: Filters7513
-Node: Library version11935
-Node: Library functions12607
-Node: Library error codes17725
-Node: Image format conversion19276
-Node: Algorithm20800
-Node: OCR results file22074
-Node: Problems24345
-Node: Concept index24883
+Node: Introduction1263
+Node: Character sets1997
+Node: Invoking ocrad3151
+Ref: --filter4097
+Ref: --user-filter4474
+Node: Filters7512
+Node: Library version12297
+Node: Library functions12969
+Node: Library error codes18087
+Node: Image format conversion19638
+Node: Algorithm21162
+Node: OCR results file22436
+Node: Problems24707
+Node: Concept index25245
 
 End Tag Table
 

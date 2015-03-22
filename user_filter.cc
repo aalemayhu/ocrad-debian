@@ -1,5 +1,5 @@
 /*  GNU Ocrad - Optical Character Recognition program
-    Copyright (C) 2014 Antonio Diaz Diaz.
+    Copyright (C) 2014, 2015 Antonio Diaz Diaz.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -177,7 +177,7 @@ void User_filter::set_file_error( const char * const file_name, const int linenu
 
 
 User_filter::User_filter( const char * const file_name )
-  : table1( 256, -1 ), retval_( 0 )
+  : table1( 256, -1 ), retval_( 0 ), default_( d_discard )
   {
   FILE * const f = std::fopen( file_name, "r" );
   if( !f )
@@ -192,6 +192,11 @@ User_filter::User_filter( const char * const file_name )
   while( retval_ == 0 )
     {
     if( my_fgets( f, line, linenum ) <= 0 ) break;
+    if( line == "leave" )
+      { if( !default_ ) default_ = d_leave; else retval_ = 2; continue; }
+    else if( line == "mark" )
+      { if( !default_ ) default_ = d_mark; else retval_ = 2; continue; }
+
     int new_code = -1;			// parse new_code first (if any)
     for( unsigned equ = line.size(), j = 0; j < 2; ++j )
       {
@@ -253,5 +258,6 @@ int User_filter::get_new_code( const int code ) const
         if( code == table2[i].code ) { result = table2[i].new_code; break; }
       }
     }
+  if( result < 0 && default_ == d_leave ) result = code;
   return result;
   }

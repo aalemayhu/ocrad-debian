@@ -1,5 +1,5 @@
 /*  GNU Ocrad - Optical Character Recognition program
-    Copyright (C) 2003-2014 Antonio Diaz Diaz.
+    Copyright (C) 2003-2015 Antonio Diaz Diaz.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ namespace {
 
 const char * const Program_name = "GNU Ocrad";
 const char * const program_name = "ocrad";
-const char * const program_year = "2014";
+const char * const program_year = "2015";
 const char * invocation_name = 0;
 
 struct Input_control
@@ -361,7 +361,7 @@ int main( const int argc, const char * const argv[] )
     if( !control.outfile )
       {
       if( verbosity >= 0 )
-        std::fprintf( stderr, "Can't open %s\n", outfile_name );
+        std::fprintf( stderr, "Can't open '%s'\n", outfile_name );
       return 1;
       }
     }
@@ -376,7 +376,7 @@ int main( const int argc, const char * const argv[] )
       if( !control.exportfile )
         {
         if( verbosity >= 0 )
-          std::fprintf( stderr, "Can't open %s\n", exportfile_name );
+          std::fprintf( stderr, "Can't open '%s'\n", exportfile_name );
         return 1;
         }
       }
@@ -399,7 +399,7 @@ int main( const int argc, const char * const argv[] )
       else infile = std::fopen( infile_name, "rb" );
       if( infile ) break;
       if( verbosity >= 0 )
-        std::fprintf( stderr, "Can't open %s\n", infile_name );
+        std::fprintf( stderr, "Can't open '%s'\n", infile_name );
       if( retval == 0 ) retval = 1;
       }
     if( !infile ) break;

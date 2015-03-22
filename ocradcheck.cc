@@ -1,5 +1,5 @@
 /*  Ocrcheck - A test program for the ocradlib library
-    Copyright (C) 2009-2014 Antonio Diaz Diaz.
+    Copyright (C) 2009-2015 Antonio Diaz Diaz.
 
     This program is free software: you have unlimited permission
     to copy, distribute and modify it.
