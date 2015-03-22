@@ -1,3 +1,14 @@
+2015-01-19  Antonio Diaz Diaz  <antonio@gnu.org>
+
+	* Version 0.25-pre6 released.
+	* Default behaviour for unlisted characters in user-defined
+	  filters is now selectable.
+
+2015-01-08  Antonio Diaz Diaz  <antonio@gnu.org>
+
+	* Version 0.25-pre5 released.
+	* textblock.cc (apply_filters): Fixed a bug in filter 'text_block'.
+
 2014-12-14  Antonio Diaz Diaz  <antonio@gnu.org>
 
 	* Version 0.25-pre4 released.
@@ -234,7 +245,7 @@
 	* Recursive 'layout detector' added.
 
 
-Copyright (C) 2003-2014 Antonio Diaz Diaz.
+Copyright (C) 2003-2015 Antonio Diaz Diaz.
 
 This file is a collection of facts, and thus it is not copyrightable,
 but just in case, you have unlimited permission to copy, distribute and

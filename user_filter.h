@@ -1,5 +1,5 @@
 /*  GNU Ocrad - Optical Character Recognition program
-    Copyright (C) 2014 Antonio Diaz Diaz.
+    Copyright (C) 2014, 2015 Antonio Diaz Diaz.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,6 +17,11 @@
 
 class User_filter
   {
+public:
+       // default action: discard, leave unmodified, mark as unrecognized
+  enum Default { d_discard = 0, d_leave, d_mark };
+
+private:
   struct Entry
     {
     int code;
@@ -28,6 +33,7 @@ class User_filter
   std::vector< Entry > table2;		// codes of UCS chars >= 256
   std::string error_;
   int retval_;
+  Default default_;
 
   bool enable_char( const int code, int new_code );
   int parse_char( const std::string & line, unsigned &i ) const;
@@ -38,4 +44,6 @@ public:
   const std::string & error() const { return error_; }
   int retval() const { return retval_; }
   int get_new_code( const int code ) const;	// -1 means disabled
+  bool discard() const { return default_ == d_discard; }
+  bool mark() const { return default_ == d_mark; }
   };

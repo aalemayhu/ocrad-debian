@@ -1,5 +1,5 @@
 /*  GNU Ocrad - Optical Character Recognition program
-    Copyright (C) 2003-2014 Antonio Diaz Diaz.
+    Copyright (C) 2003-2015 Antonio Diaz Diaz.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -310,6 +310,7 @@ int UCS::map_to_ucs( const unsigned char ch )
   }
 
 
+      // does not work for 'code' == 0
 const char * UCS::ucs_to_utf8( const int code )
   {
   static char s[7];

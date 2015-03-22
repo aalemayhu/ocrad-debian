@@ -6,8 +6,8 @@
 @finalout
 @c %**end of header
 
-@set UPDATED 14 December 2014
-@set VERSION 0.25-pre4
+@set UPDATED 19 January 2015
+@set VERSION 0.25-pre6
 
 @dircategory GNU Packages
 @direntry
@@ -50,7 +50,7 @@ This manual is for GNU Ocrad (version @value{VERSION}, @value{UPDATED}).
 @end menu
 
 @sp 1
-Copyright @copyright{} 2003-2014 Antonio Diaz Diaz.
+Copyright @copyright{} 2003-2015 Antonio Diaz Diaz.
 
 This manual is free documentation: you have unlimited permission
 to copy, distribute and modify it.
@@ -255,7 +255,10 @@ Ocrad provides both built-in filters and user-defined filters.
 @section User-defined filters
 
 The format of a user-defined filter file (@pxref{--user-filter}) is very
-simple. Each line contains a comma-separated list of quoted characters
+simple. Each line contains either a character conversion or a word that
+specifies the default behaviour for unlisted characters.
+
+A character conversion is a comma-separated list of quoted characters
 ('c'), character sets ([0-9A-Z]), character codes (U0063), or character
 ranges (U0000 - UFFFF), and an optional conversion (an equal sign (=)
 followed by a quoted character or a character code). The characters in
@@ -263,11 +266,16 @@ the list are converted to the character in the conversion. If no
 conversion is specified, the character is left unmodified (converted to
 itself).
 
-Any character not appearing in the file, either by itself or included in
-a set or range, will be discarded. The destination character of a
-conversion is considered as listed by default. Every character may be
-listed more than once, even as part of different conversions. The last
-conversion affecting a given character is the one that is performed.
+The default behaviour is to discard unlisted characters, i.e. those
+characters not appearing in the file, either by themselves or included
+in a set or range. If a line containing just the word @samp{leave} is
+found in the file, unlisted characters are left unmodified. If the word
+is @samp{mark}, unlisted characters are marked as unrecognized.
+
+The destination character of a conversion is considered as listed by
+default. Every character may be listed more than once, even as part of
+different conversions. The last conversion affecting a given character
+is the one that is performed.
 
 Character sets and quoted characters may contain escape sequences.
 
@@ -296,7 +304,7 @@ Here is an example user-defined filter file equivalent to the built-in
 filter @samp{numbers}:
 
 @example
-U0000 - U00FF              # remove this line to get @samp{numbers_only}
+leave                      # remove this line to get @samp{numbers_only}
 'D', 'O', 'Q', 'o' = '0'
 'I', 'L', 'l', '|' = '1'
 'Z', 'z'           = '2'
